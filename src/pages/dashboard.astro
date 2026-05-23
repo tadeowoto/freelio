@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { createClient } from "../lib/supabase";
+
+const supabase = createClient({
+  request: Astro.request,
+  cookies: Astro.cookies,
+});
+
+const { data } = await supabase.auth.getUser();
+const user = data?.user;
+
+if (!user) {
+  return Astro.redirect("/");
+}
+
+const name = user.user_metadata?.full_name ?? user.email;
+const avatar = user.user_metadata?.avatar_url;
+---
+
+<Layout>
+  <h1>Hola, {name}!</h1>
+  {avatar && <img src={avatar} alt={name} width="80" />}
+  <p>Email: {user.email}</p>
+  <p>ID: {user.id}</p>
+  <a href="/api/auth/signout">
+    <button>Cerrar sesión</button>
+  </a>
+</Layout>
