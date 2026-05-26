@@ -1,0 +1,20 @@
+---
+import Layout from "./Layout.astro";
+import "../styles/global.css";
+---
+
+<Layout>
+    <div class="flex">
+    <aside class="w-1/8 h-screen bg-midnight-ink">
+    <h2 class="text-canvas-white">Freelio</h2>
+    <ul class="text-canvas-white">
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/calendar">Calendario</a></li>
+        <li><a href="/clients">Clientes</a></li>
+    </ul>
+    </ul>
+
+    </aside>    
+    <slot />
+    </div>
+</Layout>

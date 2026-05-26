@@ -1,5 +1,5 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import MainLayout from "../layouts/MainLayout.astro";
 import { createClient } from "../lib/supabase";
 
 const supabase = createClient({
@@ -18,12 +18,15 @@ const name = user.user_metadata?.full_name ?? user.email;
 const avatar = user.user_metadata?.avatar_url;
 ---
 
-<Layout>
-  <h1>Hola, {name}!</h1>
-  {avatar && <img src={avatar} alt={name} width="80" />}
-  <p>Email: {user.email}</p>
-  <p>ID: {user.id}</p>
-  <a href="/api/auth/signout">
-    <button>Cerrar sesión</button>
-  </a>
-</Layout>
+<MainLayout>
+  <div>
+    <h1>Hola, {name}!</h1>
+    {avatar && <img src={avatar} alt={name} width="80" />}
+    <p>Email: {user.email}</p>
+    <p>ID: {user.id}</p>
+    <a href="/api/auth/signout">
+      <button>Cerrar sesión</button>
+    </a>
+  </div>
+  
+</MainLayout>
