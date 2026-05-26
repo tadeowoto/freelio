@@ -71,7 +71,11 @@ const {data: profile} = await supabase.from("profiles").select("*").eq("id", use
         <img src={profile?.avatar_url} alt="Profile Picture" class="w-10 h-10 rounded-full shrink-0" />
         <div class="min-w-0">
           <p class="text-white font-bold text-sm">{profile?.full_name}</p>
-          <p class="text-white/60 text-xs truncate">hola@freelio.app</p>
+          <a href="/api/auth/signout">
+            <button>
+              <p class="text-steel-gray text-xs">Cerrar sesión</p>
+            </button>
+          </a>
         </div>
       </div>
     </aside>
