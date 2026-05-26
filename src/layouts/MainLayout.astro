@@ -1,6 +1,23 @@
 ---
 import Layout from "./Layout.astro";
 import "../styles/global.css";
+import { createClient } from "../lib/supabase";
+
+const supabase = createClient({
+  request: Astro.request,
+  cookies: Astro.cookies,
+});
+
+const { data } = await supabase.auth.getUser();
+const user = data?.user;
+
+if (!user) {
+  return Astro.redirect("/");
+}
+
+const {data: profile} = await supabase.from("profiles").select("*").eq("id", user.id).single();
+console.log(profile);
+
 ---
 
 <Layout>
@@ -12,7 +29,16 @@ import "../styles/global.css";
         <li><a href="/calendar">Calendario</a></li>
         <li><a href="/clients">Clientes</a></li>
     </ul>
-    </ul>
+    <div class="text-canvas-white">
+        <div>
+            <img src={profile?.avatar_url} alt={profile?.full_name} width="80"/>
+        </div>
+        <p>{profile?.full_name}</p>
+
+        <a href="/api/auth/signout">
+            <button>Cerrar sesión</button>
+        </a>
+    </div>
 
     </aside>    
     <slot />
