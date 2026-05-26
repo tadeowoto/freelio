@@ -15,32 +15,32 @@ if (!user) {
   return Astro.redirect("/");
 }
 
-const {data: profile} = await supabase.from("profiles").select("*").eq("id", user.id).single();
-console.log(profile);
-
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("*")
+  .eq("id", user.id)
+  .single();
 ---
 
 <Layout>
-    <div class="flex">
+  <div class="flex">
     <aside class="w-1/8 h-screen bg-midnight-ink">
-    <h2 class="text-canvas-white">Freelio</h2>
-    <ul class="text-canvas-white">
+      <h2 class="text-canvas-white">Freelio</h2>
+      <ul class="text-canvas-white">
         <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/calendar">Calendario</a></li>
         <li><a href="/clients">Clientes</a></li>
-    </ul>
-    <div class="text-canvas-white">
+      </ul>
+      <div class="text-canvas-white">
         <div>
-            <img src={profile?.avatar_url} alt={profile?.full_name} width="80"/>
+          <img src={profile?.avatar_url} alt={profile?.full_name} width="80" />
         </div>
         <p>{profile?.full_name}</p>
-
         <a href="/api/auth/signout">
-            <button>Cerrar sesión</button>
+          <button>Cerrar sesión</button>
         </a>
-    </div>
-
-    </aside>    
+      </div>
+    </aside>
     <slot />
-    </div>
+  </div>
 </Layout>
