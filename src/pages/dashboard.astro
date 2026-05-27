@@ -1,61 +1,127 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import { createClient } from "../lib/supabase.ts";
+
+const supabase = createClient({
+  request: Astro.request,
+  cookies: Astro.cookies,
+});
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  return Astro.redirect("/");
+}
+
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("*")
+  .eq("id", user.id)
+  .single();
+
+const firtstName = profile?.full_name.split(" ")[0] || "Freelancer";
+
+const now = new Date();
+
+const formattedDate = now.toLocaleDateString("es-AR", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+const hour = now.getHours();
+
+const greeting =
+  hour < 12 ? "Buenos días" : hour < 19 ? "Buenas tardes" : "Buenas noches";
 ---
 
 <MainLayout>
-
   <div class="relative mb-6">
-    <p class="text-steel-gray text-sm mb-1">martes, 26 de mayo</p>
-    <h1 class="text-6xl font-bold font-display text-midnight-ink leading-none max-w-64">
-      Buenas tardes,<br />Freelance Pro.
+    <p class="text-steel-gray text-sm mb-1">{formattedDate}</p>
+    <h1
+      class="text-6xl font-bold font-display text-midnight-ink leading-none max-w-64"
+    >
+      {greeting},{firtstName}.
     </h1>
 
     <div class="absolute top-0 right-0 w-32 h-24 pointer-events-none">
-      <div class="absolute top-0 right-8 w-13 h-13 bg-vivid-green rounded-sm"></div>
-      <div class="absolute top-4 right-0 w-15 h-9 bg-bubblegum-pink rounded-sm"></div>
-      <div class="absolute top-10 right-6 w-10 h-10 bg-emerald-green rounded-full"></div>
+      <div class="absolute top-0 right-8 w-13 h-13 bg-vivid-green rounded-sm">
+      </div>
+      <div class="absolute top-4 right-0 w-15 h-9 bg-bubblegum-pink rounded-sm">
+      </div>
+      <div
+        class="absolute top-10 right-6 w-10 h-10 bg-emerald-green rounded-full"
+      >
+      </div>
     </div>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mb-6">
-
-    <div class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between">
+    <div
+      class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
+    >
       <div>
         <p class="text-midnight-ink text-sm mb-2">Clientes activos</p>
-        <p class="text-5xl font-bold font-display text-midnight-ink leading-none">8</p>
+        <p
+          class="text-5xl font-bold font-display text-midnight-ink leading-none"
+        >
+          8
+        </p>
       </div>
       <div class="w-12 h-12 rounded-full bg-vivid-green shrink-0"></div>
     </div>
 
-    <div class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between">
+    <div
+      class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
+    >
       <div>
         <p class="text-midnight-ink text-sm mb-2">Eventos esta semana</p>
-        <p class="text-5xl font-bold font-display text-midnight-ink leading-none">2</p>
+        <p
+          class="text-5xl font-bold font-display text-midnight-ink leading-none"
+        >
+          2
+        </p>
       </div>
       <div class="w-12 h-12 rounded-full bg-cadet-blue shrink-0"></div>
     </div>
 
-    <div class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between">
+    <div
+      class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
+    >
       <div>
         <p class="text-midnight-ink text-sm mb-2">Cobros pendientes</p>
-        <p class="text-5xl font-bold font-display text-midnight-ink leading-none">3</p>
+        <p
+          class="text-5xl font-bold font-display text-midnight-ink leading-none"
+        >
+          3
+        </p>
       </div>
       <div class="w-12 h-12 rounded-full bg-sunny-yellow shrink-0"></div>
     </div>
-
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
     <div class="bg-surface-card rounded-xl p-4 shadow-card">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="font-bold text-2xl font-display text-midnight-ink">Próximos eventos</h2>
-        <a href="/calendar" class="text-sm text-steel-gray no-underline">Ver todo ↗</a>
+        <h2 class="font-bold text-2xl font-display text-midnight-ink">
+          Próximos eventos
+        </h2>
+        <a href="/calendar" class="text-sm text-steel-gray no-underline"
+          >Ver todo ↗</a
+        >
       </div>
 
-      <div class="flex items-center justify-between py-3 border-b border-ash-gray">
+      <div
+        class="flex items-center justify-between py-3 border-b border-ash-gray"
+      >
         <div class="flex items-center gap-3">
           <div class="w-1 h-10 rounded-full bg-cadet-blue shrink-0"></div>
           <div>
-            <p class="font-semibold text-sm text-midnight-ink mb-0.5">Nombre del evento</p>
+            <p class="font-semibold text-sm text-midnight-ink mb-0.5">
+              Nombre del evento
+            </p>
             <p class="text-steel-gray text-sm">Cliente · Tipo</p>
           </div>
         </div>
@@ -64,31 +130,39 @@ import MainLayout from "../layouts/MainLayout.astro";
           <p class="text-sm text-steel-gray">10:00</p>
         </div>
       </div>
-
     </div>
 
     <div class="bg-surface-card rounded-xl p-4 shadow-card">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="font-bold text-2xl font-display text-midnight-ink">Clientes recientes</h2>
-        <a href="/clients" class="text-sm text-steel-gray no-underline">Ver ↗</a>
+        <h2 class="font-bold text-2xl font-display text-midnight-ink">
+          Clientes recientes
+        </h2>
+        <a href="/clients" class="text-sm text-steel-gray no-underline">Ver ↗</a
+        >
       </div>
 
-      <div class="flex items-center justify-between py-3 border-b border-ash-gray">
+      <div
+        class="flex items-center justify-between py-3 border-b border-ash-gray"
+      >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-cadet-blue flex items-center justify-center shrink-0">
+          <div
+            class="w-10 h-10 rounded-full bg-cadet-blue flex items-center justify-center shrink-0"
+          >
             <span class="text-white font-bold text-sm">AB</span>
           </div>
           <div>
-            <p class="font-semibold text-sm text-midnight-ink mb-0.5">Nombre Cliente</p>
+            <p class="font-semibold text-sm text-midnight-ink mb-0.5">
+              Nombre Cliente
+            </p>
             <p class="text-steel-gray text-sm">Empresa</p>
           </div>
         </div>
-        <span class="text-xs px-3 py-1 rounded-full bg-vivid-green/10 text-emerald-green font-medium">
+        <span
+          class="text-xs px-3 py-1 rounded-full bg-vivid-green/10 text-emerald-green font-medium"
+        >
           Activo
         </span>
       </div>
-
     </div>
   </div>
-
 </MainLayout>
