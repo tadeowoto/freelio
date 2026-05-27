@@ -36,6 +36,56 @@ const hour = now.getHours();
 
 const greeting =
   hour < 12 ? "Buenos días" : hour < 19 ? "Buenas tardes" : "Buenas noches";
+
+const { count: clientesActivos } = await supabase
+  .from("clients")
+  .select("id", { count: "exact", head: true })
+  .eq("user_id", user.id)
+  .eq("status", "activo");
+
+const startOfWeek = new Date(now);
+startOfWeek.setDate(now.getDate() - now.getDay() + 1);
+startOfWeek.setHours(0, 0, 0, 0);
+const endOfWeek = new Date(startOfWeek);
+endOfWeek.setDate(startOfWeek.getDate() + 6);
+endOfWeek.setHours(23, 59, 59, 999);
+
+const { count: eventosSemana } = await supabase
+  .from("events")
+  .select("id", { count: "exact", head: true })
+  .eq("user_id", user.id)
+  .gte("start_at", startOfWeek.toISOString())
+  .lte("start_at", endOfWeek.toISOString())
+  .neq("status", "cancelado");
+
+const { count: cobrosPendientes } = await supabase
+  .from("clients")
+  .select("id", { count: "exact", head: true })
+  .eq("user_id", user.id)
+  .eq("payment_status", "pendiente");
+
+const { data: clientesRecientes } = await supabase
+  .from("clients")
+  .select("id, name, company, status")
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false })
+  .limit(5);
+
+const coloresAvatar = [
+  "bg-cadet-blue",
+  "bg-bubblegum-pink",
+  "bg-vivid-green",
+  "bg-sunny-yellow",
+  "bg-emerald-green",
+];
+
+function inicialesCliente(nombre: string) {
+  return nombre
+    .split(" ")
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
 ---
 
 <MainLayout>
@@ -67,7 +117,7 @@ const greeting =
         <p
           class="text-5xl font-bold font-display text-midnight-ink leading-none"
         >
-          8
+          {clientesActivos ?? 0}
         </p>
       </div>
       <div class="w-12 h-12 rounded-full bg-vivid-green shrink-0"></div>
@@ -81,7 +131,7 @@ const greeting =
         <p
           class="text-5xl font-bold font-display text-midnight-ink leading-none"
         >
-          2
+          {eventosSemana ?? 0}
         </p>
       </div>
       <div class="w-12 h-12 rounded-full bg-cadet-blue shrink-0"></div>
@@ -95,7 +145,7 @@ const greeting =
         <p
           class="text-5xl font-bold font-display text-midnight-ink leading-none"
         >
-          3
+          {cobrosPendientes ?? 0}
         </p>
       </div>
       <div class="w-12 h-12 rounded-full bg-sunny-yellow shrink-0"></div>
@@ -141,27 +191,54 @@ const greeting =
         >
       </div>
 
-      <div
-        class="flex items-center justify-between py-3 border-b border-ash-gray"
-      >
-        <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-full bg-cadet-blue flex items-center justify-center shrink-0"
-          >
-            <span class="text-white font-bold text-sm">AB</span>
-          </div>
-          <div>
-            <p class="font-semibold text-sm text-midnight-ink mb-0.5">
-              Nombre Cliente
-            </p>
-            <p class="text-steel-gray text-sm">Empresa</p>
-          </div>
-        </div>
-        <span
-          class="text-xs px-3 py-1 rounded-full bg-vivid-green/10 text-emerald-green font-medium"
-        >
-          Activo
-        </span>
+      {
+        clientesRecientes && clientesRecientes.length > 0 ? (
+          clientesRecientes.map((cliente, i) => {
+            const iniciales = inicialesCliente(cliente.name);
+            const colorAvatar = coloresAvatar[i % coloresAvatar.length];
+            const esActivo = cliente.status === "activo";
+            return (
+              <a
+                href={`/clients/${cliente.id}`}
+                class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0 no-underline group"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class={`w-10 h-10 rounded-full ${colorAvatar} flex items-center justify-center shrink-0`}
+                  >
+                    <span class="text-white font-bold text-sm">
+                      {iniciales}
+                    </span>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-sm text-midnight-ink mb-0.5 group-hover:underline">
+                      {cliente.name}
+                    </p>
+                    <p class="text-steel-gray text-sm">
+                      {cliente.company ?? "Sin empresa"}
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class={`text-xs px-3 py-1 rounded-full font-medium shrink-0 ml-4 ${
+                    esActivo
+                      ? "bg-vivid-green/10 text-emerald-green"
+                      : "bg-ash-gray/30 text-steel-gray"
+                  }`}
+                >
+                  {esActivo ? "Activo" : "Inactivo"}
+                </span>
+              </a>
+            );
+          })
+        ) : (
+          <p class="text-steel-gray text-sm">No hay clientes recientes</p>
+        )
+      }
+      <div class="flex items-center justify-end mt-4">
+        <a href="/clients" class="text-sm text-steel-gray no-underline">
+          Ver todo ↗
+        </a>
       </div>
     </div>
   </div>
