@@ -1,6 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "./lib/supabase";
 
+
 const PUBLIC_ROUTES = [
   "/",
   "/api/auth/signin",  
@@ -17,6 +18,7 @@ export const onRequest = defineMiddleware(async ({ request, cookies, redirect, u
   const { data } = await supabase.auth.getUser();
 
   if (!data.user) return redirect("/auth/signin");
+
 
   return next();
 });

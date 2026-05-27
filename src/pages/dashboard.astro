@@ -64,6 +64,19 @@ const { count: cobrosPendientes } = await supabase
   .eq("user_id", user.id)
   .eq("payment_status", "pendiente");
 
+const endWindow = new Date(now);
+endWindow.setHours(now.getHours() + 72);
+
+const { data: proximosEventos } = await supabase
+  .from("events")
+  .select("id, title, type, start_at, clients ( name )")
+  .eq("user_id", user.id)
+  .gte("start_at", now.toISOString())
+  .lte("start_at", endWindow.toISOString())
+  .neq("status", "cancelado")
+  .order("start_at", { ascending: true })
+  .limit(5);
+
 const { data: clientesRecientes } = await supabase
   .from("clients")
   .select("id, name, company, status")
@@ -86,6 +99,25 @@ function inicialesCliente(nombre: string) {
     .map((p) => p[0]?.toUpperCase() ?? "")
     .join("");
 }
+
+const colorPorTipo: Record<string, string> = {
+  reunion: "bg-cadet-blue",
+  deadline: "bg-hot-pink",
+  entrega: "bg-vivid-green",
+  pago: "bg-sunny-yellow",
+  seguimiento: "bg-composer-blue",
+  otro: "bg-steel-gray",
+};
+
+function formatFechaEvento(iso: string) {
+  const d = new Date(iso);
+  return {
+    fecha: d.toLocaleDateString("es-AR", { day: "numeric", month: "short" }),
+    hora: d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }),
+  };
+}
+
+console.log(proximosEventos);
 ---
 
 <MainLayout>
@@ -163,23 +195,50 @@ function inicialesCliente(nombre: string) {
         >
       </div>
 
-      <div
-        class="flex items-center justify-between py-3 border-b border-ash-gray"
-      >
-        <div class="flex items-center gap-3">
-          <div class="w-1 h-10 rounded-full bg-cadet-blue shrink-0"></div>
-          <div>
-            <p class="font-semibold text-sm text-midnight-ink mb-0.5">
-              Nombre del evento
+      {
+        proximosEventos && proximosEventos.length > 0 ? (
+          proximosEventos.map((evento) => {
+            const { fecha, hora } = formatFechaEvento(evento.start_at);
+            const colorBarra = colorPorTipo[evento.type] ?? "bg-steel-gray";
+
+            const nombreCliente = Array.isArray(evento.clients)
+              ? (evento.clients[0]?.name ?? null)
+              : ((evento.clients as { name: string } | null)?.name ?? null);
+            return (
+              <div class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0">
+                <div class="flex items-center gap-3">
+                  <div class={`w-1 h-10 rounded-full ${colorBarra} shrink-0`} />
+                  <div>
+                    <p class="font-semibold text-sm text-midnight-ink mb-0.5">
+                      {evento.title}
+                    </p>
+                    <p class="text-steel-gray text-sm capitalize">
+                      {nombreCliente ? `${nombreCliente} · ` : ""}
+                      {evento.type}
+                    </p>
+                  </div>
+                </div>
+                <div class="text-right shrink-0 ml-4">
+                  <p class="text-sm text-midnight-ink mb-0.5">{fecha}</p>
+                  <p class="text-sm text-steel-gray">{hora}</p>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div class="py-8 text-center">
+            <p class="text-steel-gray text-sm">
+              Sin eventos en las próximas 72 hs.
             </p>
-            <p class="text-steel-gray text-sm">Cliente · Tipo</p>
+            <a
+              href="/calendar"
+              class="text-sm text-cadet-blue no-underline mt-1 inline-block"
+            >
+              No hay eventos
+            </a>
           </div>
-        </div>
-        <div class="text-right">
-          <p class="text-sm text-midnight-ink mb-0.5">26 may</p>
-          <p class="text-sm text-steel-gray">10:00</p>
-        </div>
-      </div>
+        )
+      }
     </div>
 
     <div class="bg-surface-card rounded-xl p-4 shadow-card">
