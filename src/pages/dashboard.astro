@@ -168,7 +168,8 @@ const { data: clientesRecientes } = await supabase
         <h2 class="font-bold text-2xl font-display text-midnight-ink">
           Clientes recientes
         </h2>
-        <a href="/clients" class="text-sm text-steel-gray no-underline">Ver ↗</a
+        <a href="/clients" class="text-sm text-steel-gray no-underline"
+          >Ver todo ↗</a
         >
       </div>
 
@@ -181,11 +182,6 @@ const { data: clientesRecientes } = await supabase
           <p class="text-steel-gray text-sm">No hay clientes recientes</p>
         )
       }
-      <div class="flex items-center justify-end mt-4">
-        <a href="/clients" class="text-sm text-steel-gray no-underline">
-          Ver todo ↗
-        </a>
-      </div>
     </div>
   </div>
 </MainLayout>
