@@ -2,6 +2,28 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import { clientsMock } from "../mocks/clients";
 import ClientsCard from "../components/ClientsCard.astro";
+import { createClient } from "../lib/supabase.ts";
+
+const supabase = createClient({
+  request: Astro.request,
+  cookies: Astro.cookies,
+});
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  return Astro.redirect("/");
+}
+
+const { data: clients } = await supabase
+  .from("clients")
+  .select("*")
+  .eq("user_id", user.id)
+  .order("name", { ascending: true });
+
+if (!clients) return Astro.redirect("/");
 ---
 
 <MainLayout>
@@ -40,7 +62,7 @@ import ClientsCard from "../components/ClientsCard.astro";
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {clientsMock.map((client) => <ClientsCard client={client} />)}
+      {clients?.map((client) => <ClientsCard client={client} />)}
     </div>
   </div>
 </MainLayout>
