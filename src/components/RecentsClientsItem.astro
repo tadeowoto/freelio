@@ -1,0 +1,57 @@
+---
+const { client, index } = Astro.props;
+
+const avatarColors = [
+  "bg-cadet-blue",
+  "bg-bubblegum-pink",
+  "bg-vivid-green",
+  "bg-sunny-yellow",
+  "bg-emerald-green",
+];
+
+function clientInitials(name: string) {
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+const initials = clientInitials(client.name);
+const avatarColor = avatarColors[index % avatarColors.length];
+const isActive = client.status === "activo";
+---
+
+<a
+  href={`/clients/${client.id}`}
+  class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0 no-underline group"
+>
+  <div class="flex items-center gap-3">
+    <div
+      class={`w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center shrink-0`}
+    >
+      <span class="text-white font-bold text-sm">
+        {initials}
+      </span>
+    </div>
+    <div>
+      <p
+        class="font-semibold text-sm text-midnight-ink mb-0.5 group-hover:underline"
+      >
+        {client.name}
+      </p>
+      <p class="text-steel-gray text-sm">
+        {client.company ?? "Sin empresa"}
+      </p>
+    </div>
+  </div>
+  <span
+    class={`text-xs px-3 py-1 rounded-full font-medium shrink-0 ml-4 ${
+      isActive
+        ? "bg-vivid-green/10 text-emerald-green"
+        : "bg-ash-gray/30 text-steel-gray"
+    }`}
+  >
+    {isActive ? "Activo" : "Inactivo"}
+  </span>
+</a>

@@ -1,0 +1,48 @@
+---
+const { evento } = Astro.props;
+
+function formatFechaEvento(iso: string) {
+  const d = new Date(iso);
+  return {
+    fecha: d.toLocaleDateString("es-AR", { day: "numeric", month: "short" }),
+    hora: d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }),
+  };
+}
+
+const colorPorTipo: Record<string, string> = {
+  reunion: "bg-cadet-blue",
+  deadline: "bg-hot-pink",
+  entrega: "bg-vivid-green",
+  pago: "bg-sunny-yellow",
+  seguimiento: "bg-composer-blue",
+  otro: "bg-steel-gray",
+};
+
+const { fecha, hora } = formatFechaEvento(evento.start_at);
+const colorBarra = colorPorTipo[evento.type] ?? "bg-steel-gray";
+
+const nombreCliente = Array.isArray(evento.clients)
+  ? (evento.clients[0]?.name ?? null)
+  : ((evento.clients as { name: string } | null)?.name ?? null);
+---
+
+<div
+  class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0"
+>
+  <div class="flex items-center gap-3">
+    <div class={`w-1 h-10 rounded-full ${colorBarra} shrink-0`}></div>
+    <div>
+      <p class="font-semibold text-sm text-midnight-ink mb-0.5">
+        {evento.title}
+      </p>
+      <p class="text-steel-gray text-sm capitalize">
+        {nombreCliente ? `${nombreCliente} · ` : ""}
+        {evento.type}
+      </p>
+    </div>
+  </div>
+  <div class="text-right shrink-0 ml-4">
+    <p class="text-sm text-midnight-ink mb-0.5">{fecha}</p>
+    <p class="text-sm text-steel-gray">{hora}</p>
+  </div>
+</div>

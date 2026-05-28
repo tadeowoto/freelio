@@ -1,6 +1,8 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import { createClient } from "../lib/supabase.ts";
+import UpcomingEventsItem from "../components/UpcomingEventsItem.astro";
+import RecentsClientsItem from "../components/RecentsClientsItem.astro";
 
 const supabase = createClient({
   request: Astro.request,
@@ -83,41 +85,6 @@ const { data: clientesRecientes } = await supabase
   .eq("user_id", user.id)
   .order("created_at", { ascending: false })
   .limit(5);
-
-const coloresAvatar = [
-  "bg-cadet-blue",
-  "bg-bubblegum-pink",
-  "bg-vivid-green",
-  "bg-sunny-yellow",
-  "bg-emerald-green",
-];
-
-function inicialesCliente(nombre: string) {
-  return nombre
-    .split(" ")
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? "")
-    .join("");
-}
-
-const colorPorTipo: Record<string, string> = {
-  reunion: "bg-cadet-blue",
-  deadline: "bg-hot-pink",
-  entrega: "bg-vivid-green",
-  pago: "bg-sunny-yellow",
-  seguimiento: "bg-composer-blue",
-  otro: "bg-steel-gray",
-};
-
-function formatFechaEvento(iso: string) {
-  const d = new Date(iso);
-  return {
-    fecha: d.toLocaleDateString("es-AR", { day: "numeric", month: "short" }),
-    hora: d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }),
-  };
-}
-
-console.log(proximosEventos);
 ---
 
 <MainLayout>
@@ -198,32 +165,7 @@ console.log(proximosEventos);
       {
         proximosEventos && proximosEventos.length > 0 ? (
           proximosEventos.map((evento) => {
-            const { fecha, hora } = formatFechaEvento(evento.start_at);
-            const colorBarra = colorPorTipo[evento.type] ?? "bg-steel-gray";
-
-            const nombreCliente = Array.isArray(evento.clients)
-              ? (evento.clients[0]?.name ?? null)
-              : ((evento.clients as { name: string } | null)?.name ?? null);
-            return (
-              <div class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0">
-                <div class="flex items-center gap-3">
-                  <div class={`w-1 h-10 rounded-full ${colorBarra} shrink-0`} />
-                  <div>
-                    <p class="font-semibold text-sm text-midnight-ink mb-0.5">
-                      {evento.title}
-                    </p>
-                    <p class="text-steel-gray text-sm capitalize">
-                      {nombreCliente ? `${nombreCliente} · ` : ""}
-                      {evento.type}
-                    </p>
-                  </div>
-                </div>
-                <div class="text-right shrink-0 ml-4">
-                  <p class="text-sm text-midnight-ink mb-0.5">{fecha}</p>
-                  <p class="text-sm text-steel-gray">{hora}</p>
-                </div>
-              </div>
-            );
+            return <UpcomingEventsItem evento={evento} />;
           })
         ) : (
           <div class="py-8 text-center">
@@ -253,42 +195,7 @@ console.log(proximosEventos);
       {
         clientesRecientes && clientesRecientes.length > 0 ? (
           clientesRecientes.map((cliente, i) => {
-            const iniciales = inicialesCliente(cliente.name);
-            const colorAvatar = coloresAvatar[i % coloresAvatar.length];
-            const esActivo = cliente.status === "activo";
-            return (
-              <a
-                href={`/clients/${cliente.id}`}
-                class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0 no-underline group"
-              >
-                <div class="flex items-center gap-3">
-                  <div
-                    class={`w-10 h-10 rounded-full ${colorAvatar} flex items-center justify-center shrink-0`}
-                  >
-                    <span class="text-white font-bold text-sm">
-                      {iniciales}
-                    </span>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-sm text-midnight-ink mb-0.5 group-hover:underline">
-                      {cliente.name}
-                    </p>
-                    <p class="text-steel-gray text-sm">
-                      {cliente.company ?? "Sin empresa"}
-                    </p>
-                  </div>
-                </div>
-                <span
-                  class={`text-xs px-3 py-1 rounded-full font-medium shrink-0 ml-4 ${
-                    esActivo
-                      ? "bg-vivid-green/10 text-emerald-green"
-                      : "bg-ash-gray/30 text-steel-gray"
-                  }`}
-                >
-                  {esActivo ? "Activo" : "Inactivo"}
-                </span>
-              </a>
-            );
+            return <RecentsClientsItem client={cliente} index={i} />;
           })
         ) : (
           <p class="text-steel-gray text-sm">No hay clientes recientes</p>
