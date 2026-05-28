@@ -3,6 +3,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 import { createClient } from "../lib/supabase.ts";
 import UpcomingEventsItem from "../components/UpcomingEventsItem.astro";
 import RecentsClientsItem from "../components/RecentsClientsItem.astro";
+import InformationItem from "../components/InformationItem.astro";
 
 const supabase = createClient({
   request: Astro.request,
@@ -111,42 +112,21 @@ const { data: clientesRecientes } = await supabase
     <div
       class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
     >
-      <div>
-        <p class="text-midnight-ink text-sm mb-2">Clientes activos</p>
-        <p
-          class="text-5xl font-bold font-display text-midnight-ink leading-none"
-        >
-          {clientesActivos ?? 0}
-        </p>
-      </div>
+      <InformationItem title="Clientes activos" number={clientesActivos} />
       <div class="w-12 h-12 rounded-full bg-vivid-green shrink-0"></div>
     </div>
 
     <div
       class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
     >
-      <div>
-        <p class="text-midnight-ink text-sm mb-2">Eventos esta semana</p>
-        <p
-          class="text-5xl font-bold font-display text-midnight-ink leading-none"
-        >
-          {eventosSemana ?? 0}
-        </p>
-      </div>
+      <InformationItem title="Eventos de la semana" number={eventosSemana} />
       <div class="w-12 h-12 rounded-full bg-cadet-blue shrink-0"></div>
     </div>
 
     <div
       class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
     >
-      <div>
-        <p class="text-midnight-ink text-sm mb-2">Cobros pendientes</p>
-        <p
-          class="text-5xl font-bold font-display text-midnight-ink leading-none"
-        >
-          {cobrosPendientes ?? 0}
-        </p>
-      </div>
+      <InformationItem title="Cobros pendientes" number={cobrosPendientes} />
       <div class="w-12 h-12 rounded-full bg-sunny-yellow shrink-0"></div>
     </div>
   </div>
