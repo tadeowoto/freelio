@@ -1,0 +1,64 @@
+---
+const { client } = Astro.props;
+---
+
+<div
+  class="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col justify-between min-h-[200px]"
+>
+  <div class="flex flex-row justify-between items-start">
+    <div class="flex flex-col">
+      <h2
+        class="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink"
+      >
+        {client.name}
+      </h2>
+      <span class="font-body text-steel-gray mt-0.5">
+        {client.company}
+      </span>
+    </div>
+
+    {
+      client.status === "activo" ? (
+        <span class="px-3 py-0.5 font-body font-medium rounded-full bg-vivid-green text-white text-(--text-body-sm)">
+          Activo
+        </span>
+      ) : (
+        <span class="px-3 py-0.5 font-body font-medium rounded-full bg-ash-gray text-steel-gray text-(--text-body-sm)">
+          Inactivo
+        </span>
+      )
+    }
+  </div>
+
+  <div class="flex flex-row gap-2 my-4">
+    {
+      client.colors.map((color) => (
+        <div
+          class="w-6 h-6 rounded-full border border-ash-gray shadow-sm"
+          style={`background-color: ${color};`}
+        />
+      ))
+    }
+  </div>
+
+  <div class="grid grid-cols-2 border-t border-canvas-white pt-4">
+    <div class="flex flex-col">
+      <span class="font-body text-[12px] text-steel-gray"> Tarifa </span>
+      <span
+        class="font-sans font-bold text-midnight-ink mt-0.5 text-(--text-body)"
+      >
+        {client.rate}
+      </span>
+    </div>
+    <div class="flex flex-col">
+      <span class="font-body text-[12px] text-steel-gray">
+        Último contacto
+      </span>
+      <span
+        class="font-sans font-medium text-graphite mt-0.5 text-(--text-body-sm)"
+      >
+        {client.lastContact}
+      </span>
+    </div>
+  </div>
+</div>

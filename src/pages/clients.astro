@@ -1,9 +1,46 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import { clientsMock } from "../mocks/clients";
+import ClientsCard from "../components/ClientsCard.astro";
 ---
 
 <MainLayout>
-  <div>
-    <h1>Clientes</h1>
+  <div
+    class="w-full mt-10 max-w-(--page-max-width) mx-auto flex flex-col gap-(--section-gap) text-white"
+  >
+    <div class="w-full flex flex-row items-center justify-between">
+      <h1
+        class="font-sans text-4xl font-bold tracking-heading-lg text-midnight-ink"
+      >
+        Clientes
+      </h1>
+      <button
+        class="h-10 px-6 flex items-center gap-2 bg-sunset-orange border-none rounded-sm font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
+      >
+        <span class="text-xl font-bold">+</span> Nuevo cliente
+      </button>
+    </div>
+
+    <div class="flex flex-row items-center gap-3">
+      <button
+        class="px-4 h-8 flex items-center justify-center bg-midnight-ink font-body font-medium text-(--text-body-sm) rounded-full cursor-pointer"
+      >
+        Todos
+      </button>
+      <button
+        class="px-4 h-8 flex items-center justify-center text-graphite bg-white border border-ash-gray font-body font-medium rounded-full cursor-pointer hover:bg-canvas-white transition-colors"
+      >
+        Activos
+      </button>
+      <button
+        class="px-4 h-8 flex items-center justify-center text-graphite bg-white border border-ash-gray font-body font-medium rounded-full cursor-pointer hover:bg-canvas-white transition-colors"
+      >
+        Inactivos
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {clientsMock.map((client) => <ClientsCard client={client} />)}
+    </div>
   </div>
 </MainLayout>
