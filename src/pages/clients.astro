@@ -3,6 +3,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 import { clientsMock } from "../mocks/clients";
 import ClientsCard from "../components/ClientsCard.astro";
 import { createClient } from "../lib/supabase.ts";
+import NewClientButton from "../components/NewClientButton.tsx";
 
 const supabase = createClient({
   request: Astro.request,
@@ -36,11 +37,7 @@ if (!clients) return Astro.redirect("/");
       >
         Clientes
       </h1>
-      <button
-        class="h-10 px-6 flex items-center gap-2 bg-sunset-orange border-none rounded-sm font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
-      >
-        <span class="text-xl font-bold">+</span> Nuevo cliente
-      </button>
+      <NewClientButton client:load />
     </div>
 
     <div class="flex flex-row items-center gap-3">
