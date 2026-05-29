@@ -1,10 +1,13 @@
 import { useState } from "react";
 import {useForm} from "react-hook-form";
 
+
+
 type NewClientFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
 };
+
 
 export default function NewClientFormModal({
   isOpenModal,
@@ -23,9 +26,44 @@ export default function NewClientFormModal({
   const [estadoCobro, setEstadoCobro] = useState("pendiente");
   const [estadoCliente, setEstadoCliente] = useState("activo");
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-  });
+
+  const onSubmit = handleSubmit(async (data, e) => {
+  
+  console.log(data);
+
+  const formData = {
+    name: data.name,
+    company: data.company,
+    status: data.status,
+    payment_status: data.payment_status,
+    contact: data.contact,
+    email: data.email,
+    phone:data.phone,
+    payment_method: data.paymenth_method,
+    first_contact_at: data.first_contact_at,
+    last_contact_at: data.last_contact_at,
+    fee: data.fee 
+  };
+
+  try {
+    const response = await fetch("/api/clients", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) throw new Error("Error al guardar");
+
+    const data = await response.json();
+    console.log("Cliente creado con éxito:", data);
+
+    onClose(); 
+    window.location.reload(); 
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 
   return (
     <div
@@ -73,11 +111,11 @@ export default function NewClientFormModal({
                   type="text"
                   placeholder="María García"
                   className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("nombreCompleto", { required: "El nombre es obligatorio" })}
+                  {...register("name", { required: "El nombre es obligatorio" })}
                 />
-                {errors.nombreCompleto && (
+                {errors.name && (
                   <span className="font-body text-[11px] text-action-red">
-                    {errors.nombreCompleto.message as string}
+                    {errors.name.message as string}
                   </span>
                 )}
               </div>
@@ -89,11 +127,11 @@ export default function NewClientFormModal({
                   placeholder="Mundo Padel..."
                   type="text"
                   className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("empresa", { required: "La empresa es obligatoria" })}
+                  {...register("company", { required: "La empresa es obligatoria" })}
                 />
-                {errors.empresa && (
+                {errors.company && (
                   <span className="font-body text-[11px] text-action-red">
-                    {errors.empresa.message as string}
+                    {errors.company.message as string}
                   </span>
                 )}
               </div>
@@ -108,11 +146,11 @@ export default function NewClientFormModal({
                   type="text"
                   placeholder="CEO, Marketing Manager"
                   className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("rolContacto", { required: "El rol del contacto es obligatorio" })}
+                  {...register("contact", { required: "El rol del contacto es obligatorio" })}
                 />
-                {errors.rolContacto && (
+                {errors.contact && (
                   <span className="font-body text-[11px] text-action-red">
-                    {errors.rolContacto.message as string}
+                    {errors.contact.message as string}
                   </span>
                 )}
               </div>
@@ -147,11 +185,11 @@ export default function NewClientFormModal({
                 <input
                   type="tel"
                   className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("telefono", { required: "El teléfono es obligatorio" })}
+                  {...register("phone", { required: "El teléfono es obligatorio" })}
                 />
-                {errors.telefono && (
+                {errors.phone && (
                   <span className="font-body text-[11px] text-action-red">
-                    {errors.telefono.message as string}
+                    {errors.phone.message as string}
                   </span>
                 )}
               </div>
@@ -171,11 +209,42 @@ export default function NewClientFormModal({
                 type="number"
                 placeholder="45"
                 className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                {...register("tarifa", { required: "La tarifa es obligatoria" })}
+                {...register("fee", { required: "La tarifa es obligatoria" })}
               />
-              {errors.tarifa && (
+              {errors.fee && (
                 <span className="font-body text-[11px] text-action-red">
-                  {errors.tarifa.message as string}
+                  {errors.fee.message as string}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+                Primer contacto
+              </label>
+              <input
+                type="date"
+                className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                {...register("first_contact_at", { required: "La fecha es obligatoria" })}
+              />
+              {errors.first_contact_at && (
+                <span className="font-body text-[11px] text-action-red">
+                  {errors.first_contact_at.message as string}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+                Ultimo contacto
+              </label>
+              <input
+                type="date"
+                placeholder=" 45" 
+                className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                {...register("last_contact_at")}
+              />
+              {errors.last_contact_at && (
+                <span className="font-body text-[11px] text-action-red">
+                  {errors.last_contact_at.message as string}
                 </span>
               )}
             </div>
@@ -185,12 +254,13 @@ export default function NewClientFormModal({
                 Modalidad
               </label>
               <select
-                {...register("modalidad")}
+                {...register("payment_method")}
                 value={modalidad}
                 onChange={(e) => setModalidad(e.target.value)}
                 className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
                 
               >
+                <option value="">Ingrese una modalidad</option>
                 <option value="por_hora">Por hora</option>
                 <option value="por_proyecto">Por proyecto</option>
                 <option value="mensual">Mensual</option>
@@ -202,12 +272,13 @@ export default function NewClientFormModal({
                 Estado de cobro
               </label>
               <select
-                {...register("estadoCobro")}
+                {...register("payment_status")}
                 value={estadoCobro}
                 onChange={(e) => setEstadoCobro(e.target.value)}
                 className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
                 
               >
+                <option value="">Ingrese un estado</option>
                 <option value="cobrado">Cobrado</option>
                 <option value="pendiente">Pendiente</option>
               </select>
@@ -218,12 +289,13 @@ export default function NewClientFormModal({
                 Estado del cliente
               </label>
               <select
-                {...register("estadoCliente")}
+                {...register("status")}
                 value={estadoCliente}
                 onChange={(e) => setEstadoCliente(e.target.value)}
                 className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
                 
               >
+                <option value="">Ingrese un estado</option>
                 <option value="activo">Activo</option>
                 <option value="inactivo">Inactivo</option>
               </select>
