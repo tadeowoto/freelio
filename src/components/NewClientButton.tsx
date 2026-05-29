@@ -16,7 +16,10 @@ export default function NewClientButton() {
       >
         <span className="text-xl font-bold">+</span> Nuevo cliente
       </button>
-      <NewClientFormModal isOpenModal={isOpenModal} />
+      <NewClientFormModal
+        onClose={() => setIsOpenModal(false)}
+        isOpenModal={isOpenModal}
+      />
     </>
   );
 }
