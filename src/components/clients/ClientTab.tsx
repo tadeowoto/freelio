@@ -38,8 +38,9 @@ export default function ClientTabs({ client, brandKit, events }: Props) {
       </div>
 
       {activeTab === "info" && <TabInfo client={client} />}
-      {activeTab === "brandkit" && <TabBrandKit brandKit={brandKit} />}
+      {activeTab === "brandkit" && <TabBrandKit brandKit={brandKit} clientId={client.id} />}
       {activeTab === "eventos" && <TabEventos events={events ?? []} />}
+
     </div>
   );
 }

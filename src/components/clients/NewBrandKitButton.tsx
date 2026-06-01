@@ -1,12 +1,16 @@
 import { useState } from "react";
 import NewBrandKitFormModal from "./NewBrandKitFormModal";
 
-export default function NewBrandKitButton() {
+
+type NewBrandKitButtonProps = { clientId: string };
+
+export default function NewBrandKitButton({ clientId }: NewBrandKitButtonProps) {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const handleClick = () => {
     setIsOpenModal(!isOpenModal);
   };
+
 
   return (
     <>
@@ -19,6 +23,7 @@ export default function NewBrandKitButton() {
       <NewBrandKitFormModal
         isOpenModal={isOpenModal}
         onClose={() => setIsOpenModal(false)}
+        clientId={clientId}
       />
     </>
   );
