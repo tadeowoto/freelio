@@ -1,7 +1,7 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
 import { createClient } from "../../lib/supabase.ts";
-import ClientTabs from "../../components/ClientTab.tsx";
+import ClientTabs from "../../components/clients/ClientTab.tsx";
 
 const supabase = createClient({
   request: Astro.request,

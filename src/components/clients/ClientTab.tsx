@@ -2,7 +2,7 @@ import { useState } from "react";
 import TabInfo from "./TabInfo";
 import TabBrandKit from "./TabBrandKit";
 import TabEventos from "./TabEventos";
-import type { Client, BrandKit, Tab } from "../types/types";
+import type { Client, BrandKit, Tab } from "../../types/types";
 
 interface Props {
   client: Client;

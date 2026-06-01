@@ -1,4 +1,4 @@
-import type { BrandKit } from "../types/types";
+import type { BrandKit } from "../../types/types";
 
 export default function TabBrandKit({
   brandKit,
