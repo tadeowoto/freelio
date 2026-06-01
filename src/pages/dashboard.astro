@@ -1,9 +1,9 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import { createClient } from "../lib/supabase.ts";
-import UpcomingEventsItem from "../components/UpcomingEventsItem.astro";
-import RecentsClientsItem from "../components/RecentsClientsItem.astro";
-import InformationItem from "../components/InformationItem.astro";
+import UpcomingEventsItem from "../components/dashboard/UpcomingEventsItem.astro";
+import RecentsClientsItem from "../components/dashboard/RecentsClientsItem.astro";
+import InformationItem from "../components/dashboard/InformationItem.astro";
 
 const supabase = createClient({
   request: Astro.request,
