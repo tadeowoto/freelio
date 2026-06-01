@@ -2,8 +2,8 @@
 import Layout from "./Layout.astro";
 import "../styles/global.css";
 import { createClient } from "../lib/supabase";
-import Aside from "../components/Aside.astro";
-import MobileHeader from "../components/MobileHeader.astro";
+import Aside from "../components/layout/Aside.astro";
+import MobileHeader from "../components/layout/MobileHeader.astro";
 const supabase = createClient({
   request: Astro.request,
   cookies: Astro.cookies,
