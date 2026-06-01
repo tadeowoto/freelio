@@ -1,6 +1,7 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
 import { createClient } from "../../lib/supabase.ts";
+import ClientTabs from "../../components/ClientTab.tsx";
 
 const supabase = createClient({
   request: Astro.request,
@@ -32,7 +33,11 @@ if (!client) {
   return Astro.redirect("/clients");
 }
 
-//TODO TRAER EL BRANDKIT PARA TRAER LOS COLORES Y LA INFO
+const { data: brandKit } = await supabase
+  .from("brand_kits")
+  .select("*")
+  .eq("client_id", id)
+  .single();
 ---
 
 <MainLayout>
@@ -88,84 +93,6 @@ if (!client) {
       </div>
     </div>
 
-    <div class="flex flex-row gap-6 border-b border-ash-gray/50 z-10 -mt-4">
-      <button
-        class="pb-3 font-body font-semibold text-(--text-body-sm) text-midnight-ink border-b-2 border-midnight-ink cursor-pointer"
-      >
-        Info
-      </button>
-      <button
-        class="pb-3 font-body font-medium text-(--text-body-sm) text-steel-gray hover:text-graphite cursor-pointer transition-colors"
-      >
-        Brand Kit
-      </button>
-      <button
-        class="pb-3 font-body font-medium text-(--text-body-sm) text-steel-gray hover:text-graphite cursor-pointer transition-colors"
-      >
-        Eventos
-      </button>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start z-10">
-      <div
-        class="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card) lg:col-span-2"
-      >
-        <h2
-          class="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-6"
-        >
-          Información
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
-          <div>
-            <span
-              class="block font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider"
-              >Empresa</span
-            >
-            <span
-              class="block font-sans font-medium text-graphite text-(--text-body) mt-1"
-              >{client.company || "—"}</span
-            >
-          </div>
-
-          <div>
-            <span
-              class="block font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider"
-              >Email</span
-            >
-            <span
-              class="block font-sans font-medium text-graphite text-(--text-body) mt-1"
-              >{client.email || "—"}</span
-            >
-          </div>
-
-          <div>
-            <span
-              class="block font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider"
-              >Teléfono</span
-            >
-            <span
-              class="block font-sans font-medium text-graphite text-(--text-body) mt-1"
-              >{client.phone || "—"}</span
-            >
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card) relative overflow-hidden"
-      >
-        <div
-          class="absolute top-4 right-0 w-3 h-16 bg-hot-pink/90 rounded-l-sm"
-        >
-        </div>
-
-        <h2
-          class="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-4"
-        >
-          Notas
-        </h2>
-      </div>
-    </div>
+    <ClientTabs client={client} brandKit={brandKit} client:load />
   </div>
 </MainLayout>
