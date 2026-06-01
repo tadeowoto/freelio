@@ -2,14 +2,15 @@ import { useState } from "react";
 import TabInfo from "./TabInfo";
 import TabBrandKit from "./TabBrandKit";
 import TabEventos from "./TabEventos";
-import type { Client, BrandKit, Tab } from "../../types/types";
+import type { Client, BrandKit, Tab, Event } from "../../types/types";
 
 interface Props {
   client: Client;
   brandKit: BrandKit | null;
+  events: Event[];
 }
 
-export default function ClientTabs({ client, brandKit }: Props) {
+export default function ClientTabs({ client, brandKit, events }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("info");
 
   const tabs: { id: Tab; label: string }[] = [
@@ -38,7 +39,7 @@ export default function ClientTabs({ client, brandKit }: Props) {
 
       {activeTab === "info" && <TabInfo client={client} />}
       {activeTab === "brandkit" && <TabBrandKit brandKit={brandKit} />}
-      {activeTab === "eventos" && <TabEventos clientId={client.id} />}
+      {activeTab === "eventos" && <TabEventos events={events ?? []} />}
     </div>
   );
 }

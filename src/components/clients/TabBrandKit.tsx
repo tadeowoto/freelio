@@ -1,4 +1,5 @@
 import type { BrandKit } from "../../types/types";
+import NewBrandKitButton from "./NewBrandKitButton";
 
 export default function TabBrandKit({
   brandKit,
@@ -7,9 +8,12 @@ export default function TabBrandKit({
 }) {
   if (!brandKit) {
     return (
-      <div className="text-center py-16 text-steel-gray font-body">
-        Este cliente no tiene brand kit todavía.
-      </div>
+      <>
+        <div className="text-center py-16 text-steel-gray font-body">
+          Este cliente no tiene brand kit todavía.
+        </div>
+        <NewBrandKitButton />
+      </>
     );
   }
 

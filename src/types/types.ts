@@ -37,3 +37,16 @@ export interface Client {
   notes: string | null;
   status: string;
 }
+
+export interface Event {
+  id: string;
+  user_id: string;
+  client_id: string;
+  title: string;
+  description: string;
+  type: string;
+  start_at: Date;
+  end_at: Date;
+  reminder: Date;
+  status: string;
+}

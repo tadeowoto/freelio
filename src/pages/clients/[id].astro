@@ -38,6 +38,11 @@ const { data: brandKit } = await supabase
   .select("*")
   .eq("client_id", id)
   .single();
+
+const { data: events } = await supabase
+  .from("events")
+  .select("*")
+  .eq("client_id", id);
 ---
 
 <MainLayout>
@@ -93,6 +98,11 @@ const { data: brandKit } = await supabase
       </div>
     </div>
 
-    <ClientTabs client={client} brandKit={brandKit} client:load />
+    <ClientTabs
+      client={client}
+      brandKit={brandKit}
+      events={events ?? []}
+      client:load
+    />
   </div>
 </MainLayout>
