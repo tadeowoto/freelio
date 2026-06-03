@@ -7,6 +7,7 @@ type TabBrandKitProps = {
 };
 
 export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
+  console.log("BrandKit en TabBrandKit:", brandKit, clientId);
   if (!brandKit) {
     return (
       <>

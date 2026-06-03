@@ -106,10 +106,14 @@ export default function NewBrandKitFormModal({
 
       if (!response.ok) throw new Error("Error al guardar el brand kit");
 
+
+      const data = await response.json();
+
       onClose();
       window.location.reload();
     } catch (err) {
       console.error(err);
+      
     }
   });
 
