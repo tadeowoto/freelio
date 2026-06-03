@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import type { Color, Font, AssetLink } from "../../types/types";
+import type { Color, Font, AssetLink, BrandKit } from "../../types/types";
 
 type NewBrandkitFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
   clientId: string;
+  brandKit?: BrandKit | null;
+  isEdit: boolean;
 };
 
 type FormInputs = {
@@ -19,6 +21,8 @@ export default function NewBrandKitFormModal({
   isOpenModal,
   onClose,
   clientId,
+  brandKit,
+  isEdit,
 }: NewBrandkitFormModalProps) {
   if (!isOpenModal) return null;
 
@@ -32,6 +36,7 @@ export default function NewBrandKitFormModal({
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
@@ -41,6 +46,24 @@ export default function NewBrandKitFormModal({
       notes: "",
     },
   });
+
+  useEffect(() => {
+    if (isEdit && brandKit) {
+      reset({
+        colors: brandKit.colors || [],
+        fonts: brandKit.fonts || [],
+        assets_links: brandKit.assets_links || [],
+        notes: brandKit.notes || "",
+      });
+    } else if (!isEdit) {
+      reset({
+        colors: [],
+        fonts: [],
+        assets_links: [],
+        notes: "",
+      });
+    }
+  }, [isEdit, brandKit, reset, isOpenModal]);
 
   const {
     fields: colorFields,
@@ -76,7 +99,7 @@ export default function NewBrandKitFormModal({
 
   const handleAddFontClick = (
     fontName: string,
-    fontRole: "heading" | "body" | "accent"
+    fontRole: "heading" | "body" | "accent",
   ) => {
     if (!fontName) return;
     appendFont({ name: fontName, role: fontRole });
@@ -88,8 +111,8 @@ export default function NewBrandKitFormModal({
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("Form data:", data);
     const formData = {
+      id: brandKit?.id,
       client_id: clientId,
       colors: data.colors,
       fonts: data.fonts,
@@ -97,26 +120,38 @@ export default function NewBrandKitFormModal({
       assets_links: data.assets_links,
     };
 
-    try {
-      const response = await fetch("/api/brandkits", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+    if (isEdit) {
+      try {
+        const response = await fetch("/api/edit/brandkits", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
 
-      if (!response.ok) throw new Error("Error al guardar el brand kit");
+        if (!response.ok) throw new Error("Error al editar el brand kit");
 
+        onClose();
+        window.location.reload();
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      try {
+        const response = await fetch("/api/brandkits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
 
-      const data = await response.json();
+        if (!response.ok) throw new Error("Error al guardar el brand kit");
 
-      onClose();
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-      
+        onClose();
+        window.location.reload();
+      } catch (err) {
+        console.error(err);
+      }
     }
   });
-
 
   return (
     <div
@@ -144,120 +179,178 @@ export default function NewBrandKitFormModal({
           &times;
         </button>
 
-        <form onSubmit={onSubmit} className="p-8 pt-16 flex flex-col gap-6 text-graphite">
+        <form
+          onSubmit={onSubmit}
+          className="p-8 pt-16 flex flex-col gap-6 text-graphite"
+        >
           <div className="flex flex-col gap-0.5 mb-2">
-            <span className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+            <span className="font-body text-(--text-body-sm) font-bold text-steel-gray uppercase tracking-wider">
               María García
             </span>
             <h1 className="font-sans text-4xl font-bold text-(--text-heading) tracking-heading text-midnight-ink">
-              Editar brand kit
+              {isEdit ? "Editar brand kit" : "Nuevo brand kit"}
             </h1>
           </div>
 
-         
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <h2 className="font-sans font-bold text-base text-midnight-ink">
               Paleta de colores
             </h2>
 
-            <ColorInputForm onAdd={handleAddColorClick} />
-
             {colorFields.length > 0 && (
-              <div className="flex flex-row gap-2 flex-wrap border-t border-canvas-white pt-3 mt-1">
+              <div className="flex flex-row gap-6 flex-wrap pb-2">
                 {colorFields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="flex items-center gap-2 px-2 py-1 bg-canvas-white rounded-md border border-ash-gray group hover:border-red-300 transition-colors"
+                    className="flex flex-col items-center gap-1.5 relative group"
                   >
-                    <span
-                      className="w-3 h-3 rounded-full border border-ash-gray"
+                    <input
+                      type="hidden"
+                      {...register(`colors.${index}.name`)}
+                    />
+                    <input type="hidden" {...register(`colors.${index}.hex`)} />
+
+                    <div
+                      className="w-12 h-12 rounded-full border border-ash-gray shadow-(--shadow-subtle) transition-transform group-hover:scale-105"
                       style={{ backgroundColor: field.hex }}
                     />
-                    <span className="font-body text-[12px] text-graphite font-medium">
+                    <span className="font-body font-medium text-[12px] text-midnight-ink">
                       {field.name}
                     </span>
+                    <span className="font-body text-[10px] text-steel-gray -mt-1">
+                      {field.hex}
+                    </span>
+
                     <button
                       type="button"
                       onClick={() => removeColor(index)}
-                      className="ml-1 text-gray-400 hover:text-red-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-white border border-ash-gray text-action-red rounded-full flex items-center justify-center text-[11px] font-bold cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
                     >
-                      ×
+                      &times;
                     </button>
                   </div>
                 ))}
               </div>
             )}
+
+            <ColorInputForm onAdd={handleAddColorClick} />
           </div>
 
-          
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <h2 className="font-sans font-bold text-base text-midnight-ink">
               Tipografías
             </h2>
 
-            <FontInputForm onAdd={handleAddFontClick} />
-
             {fontFields.length > 0 && (
-              <div className="flex flex-col gap-1.5 border-t border-canvas-white pt-3">
+              <div className="flex flex-col gap-2.5">
                 {fontFields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="flex justify-between items-center text-(--text-body-sm) bg-canvas-white p-2 rounded-md font-body group hover:bg-red-50 transition-colors"
+                    className="flex items-center justify-between p-3 border border-ash-gray rounded-xl bg-white font-body group hover:border-steel-gray transition-colors"
                   >
-                    <span className="text-graphite font-medium">{field.name}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] bg-ash-gray text-steel-gray px-2 py-0.5 rounded-full font-bold uppercase">
-                        {field.role}
+                    <input type="hidden" {...register(`fonts.${index}.name`)} />
+                    <input type="hidden" {...register(`fonts.${index}.role`)} />
+                    <input type="hidden" {...register(`fonts.${index}.url`)} />
+
+                    <div className="flex items-center gap-4">
+                      <span className="font-serif text-2xl text-midnight-ink font-semibold select-none">
+                        Aa
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => removeFont(index)}
-                        className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        ×
-                      </button>
+                      <div className="flex flex-col">
+                        <span className="text-midnight-ink font-medium text-(--text-body-sm)">
+                          {field.name}
+                        </span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-steel-gray mt-0.5">
+                          {field.role}
+                        </span>
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => removeFont(index)}
+                      className="w-8 h-8 flex items-center justify-center text-steel-gray hover:text-action-red rounded-md hover:bg-canvas-white transition-colors cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      </svg>
+                    </button>
                   </div>
                 ))}
               </div>
             )}
+
+            <FontInputForm onAdd={handleAddFontClick} />
           </div>
 
-         
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <h2 className="font-sans font-bold text-base text-midnight-ink">
               Links de assets
             </h2>
 
-            <AssetInputForm onAdd={handleAddAssetClick} />
-
             {assetFields.length > 0 && (
-              <div className="flex flex-col gap-1.5 border-t border-canvas-white pt-3">
+              <div className="flex flex-col gap-2.5">
                 {assetFields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="flex justify-between text-(--text-body-sm) bg-canvas-white p-2 rounded-md font-body group hover:bg-red-50 transition-colors"
+                    className="flex items-center justify-between p-3 border border-ash-gray rounded-xl bg-white font-body group hover:border-steel-gray transition-colors"
                   >
-                    <span className="text-graphite font-medium">{field.label}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-steel-gray truncate max-w-[200px]">
+                    <input
+                      type="hidden"
+                      {...register(`assets_links.${index}.label`)}
+                    />
+                    <input
+                      type="hidden"
+                      {...register(`assets_links.${index}.url`)}
+                    />
+
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <span className="text-midnight-ink font-semibold text-(--text-body-sm)">
+                        {field.label}
+                      </span>
+                      <span className="text-steel-gray text-[12px] truncate max-w-[450px] mt-0.5">
                         {field.url}
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => removeAsset(index)}
-                        className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        ×
-                      </button>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => removeAsset(index)}
+                      className="w-8 h-8 flex items-center justify-center text-steel-gray hover:text-action-red rounded-md hover:bg-canvas-white transition-colors cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      </svg>
+                    </button>
                   </div>
                 ))}
               </div>
             )}
+            <AssetInputForm onAdd={handleAddAssetClick} />
           </div>
 
-          {/* NOTAS */}
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <h2 className="font-sans font-bold text-base text-midnight-ink">
               Notas de estilo
@@ -270,7 +363,6 @@ export default function NewBrandKitFormModal({
             />
           </div>
 
-          {/* BOTONES */}
           <div className="w-full flex flex-row items-center justify-end gap-4 mt-2 border-t border-canvas-white pt-4">
             <button
               type="button"
@@ -291,7 +383,6 @@ export default function NewBrandKitFormModal({
     </div>
   );
 }
-
 
 function ColorInputForm({
   onAdd,
@@ -333,15 +424,15 @@ function ColorInputForm({
   );
 }
 
-
 function FontInputForm({
   onAdd,
 }: {
   onAdd: (name: string, role: "heading" | "body" | "accent") => void;
 }) {
   const [fontName, setFontName] = useState("");
-  const [fontRole, setFontRole] =
-    useState<"heading" | "body" | "accent">("body");
+  const [fontRole, setFontRole] = useState<"heading" | "body" | "accent">(
+    "body",
+  );
 
   const handleClick = () => {
     onAdd(fontName, fontRole);
@@ -396,7 +487,6 @@ function FontInputForm({
     </div>
   );
 }
-
 
 function AssetInputForm({
   onAdd,

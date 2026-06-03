@@ -1,5 +1,5 @@
 import type { BrandKit } from "../../types/types";
-import NewBrandKitButton from "./NewBrandKitButton";
+import NewBrandKitButton from "./BrandKitButton";
 
 type TabBrandKitProps = {
   brandKit: BrandKit | null;
@@ -7,14 +7,17 @@ type TabBrandKitProps = {
 };
 
 export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
-  console.log("BrandKit en TabBrandKit:", brandKit, clientId);
   if (!brandKit) {
     return (
       <>
         <div className="text-center py-16 text-steel-gray font-body">
           Este cliente no tiene brand kit todavía.
         </div>
-        <NewBrandKitButton clientId={clientId} />
+        <NewBrandKitButton
+          clientId={clientId}
+          isEdit={false}
+          text={"Crear BrandKit"}
+        />
       </>
     );
   }
@@ -22,9 +25,12 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex justify-end">
-        <button className="btn-action flex items-center gap-2 text-(--text-body-sm)">
-          Editar brand kit
-        </button>
+        <NewBrandKitButton
+          clientId={clientId}
+          brandKit={brandKit}
+          isEdit={true}
+          text={"Editar el BrandKit"}
+        />
       </div>
 
       <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card)">
@@ -95,6 +101,18 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
           </div>
         </div>
       )}
+
+      <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card)">
+        <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-6">
+          Notas
+        </h2>
+        <div className="flex flex-col gap-2">
+          {" "}
+          <span className="text-steel-gray group-hover:text-composer-blue transition-colors">
+            {brandKit.notes}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

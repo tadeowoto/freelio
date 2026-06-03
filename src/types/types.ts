@@ -17,9 +17,10 @@ export interface AssetLink {
 }
 
 export interface BrandKit {
+  id: string;
   colors: Color[];
   fonts: Font[];
-  style_notes: string | null;
+  notes: string | null;
   assets_links: AssetLink[];
 }
 
