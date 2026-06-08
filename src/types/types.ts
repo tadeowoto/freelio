@@ -61,3 +61,13 @@ export interface FullCalendarEvent {
   description: string;
   end_at: string;
 }
+
+export type EventFormValues = {
+  title: string;
+  description?: string;
+  client_id?: string;
+  start_at: string;
+  end_at?: string;
+  reminder?: string;
+  status?: string;
+};

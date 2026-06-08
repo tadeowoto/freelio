@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import type { EventFormValues} from "../../types/types";
 
 type NewEventFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
+  defaultDate?: string; 
 };
 
 const EVENT_TYPES = [
@@ -17,6 +19,7 @@ const EVENT_TYPES = [
 export default function NewEventFormModal({
   isOpenModal,
   onClose,
+  defaultDate,
 }: NewEventFormModalProps) {
   if (!isOpenModal) return null;
 
@@ -30,7 +33,11 @@ export default function NewEventFormModal({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<EventFormValues>({
+    defaultValues: {
+        start_at: defaultDate ?? "",
+    },
+  });
 
   const [eventType, setEventType] = useState("reunion");
   const [allDay] = useState(false);
@@ -43,10 +50,9 @@ export default function NewEventFormModal({
       description: data.description,
       type: eventType,  
       start_at: data.start_at,
-      end_at: data.end_at,
-      reminder: recordatorio || null,
-      status: data.status,
-      notes: data.notes || null,
+      end_at: data.end_at || null,
+      //reminder: recordatorio || null,
+      status: data.status || null,
     };
 
     try {
@@ -56,7 +62,11 @@ export default function NewEventFormModal({
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Error al guardar");
+      if (!response.ok) {
+  const errorData = await response.json();
+  console.error("API error:", errorData);
+  throw new Error(errorData.error || "Error al guardar");
+}
 
       onClose();
       window.location.reload();
@@ -152,10 +162,7 @@ export default function NewEventFormModal({
             </div>
           </div>
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <h2 className="font-sans font-bold text-base text-midnight-ink">
-              Fecha y hora
-            </h2>
-
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
@@ -164,13 +171,13 @@ export default function NewEventFormModal({
                 <input
                   type={allDay ? "date" : "datetime-local"}
                   className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("start_date", {
+                  {...register("start_at", {
                     required: "La fecha de inicio es obligatoria",
                   })}
                 />
-                {errors.start_date && (
+                {errors.start_at && (
                   <span className="font-body text-[11px] text-action-red">
-                    {errors.start_date.message as string}
+                    {errors.start_at.message as string}
                   </span>
                 )}
               </div>
@@ -183,7 +190,7 @@ export default function NewEventFormModal({
                   <input
                     type="datetime-local"
                     className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                    {...register("end_date")}
+                    {...register("end_at")}
                   />
                 </div>
               )}
@@ -209,18 +216,15 @@ export default function NewEventFormModal({
           </div>
 
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <h2 className="font-sans font-bold text-base text-midnight-ink">
-              Descripción
-            </h2>
-
+            
             <div className="flex flex-col gap-1.5">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-                Notas
+                Descripción
               </label>
               <textarea
                 rows={4}
                 className="border border-ash-gray rounded-md px-3 py-2 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all resize-y"
-                {...register("notes")}
+                {...register("description")}
               />
             </div>
           </div>

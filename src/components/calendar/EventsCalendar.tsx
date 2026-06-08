@@ -4,14 +4,22 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { FullCalendarEvent } from "../../types/types";
 import NewEventButton from "./NewEventButton";
+import NewEventFormModal from "./NewEventFormModal";
 
 interface EventsCalendarProps {
   events: FullCalendarEvent[];
 }
 
 export default function EventsCalendar({ events }: EventsCalendarProps) {
-  const calendarRef = useRef<FullCalendar>(null);
+  const calendarRef = useRef<FullCalendar >(null);
   const [currentTitle, setCurrentTitle] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+
+  const handleDateClick = (info: { dateStr: string }) => {
+    setSelectedDate(`${info.dateStr}T09:00`);
+    setIsModalOpen(true);
+  };
 
   const updateTitle = () => {
     if (calendarRef.current) {
@@ -113,6 +121,8 @@ export default function EventsCalendar({ events }: EventsCalendarProps) {
             height="100%"
             locale="es"
             events={events}
+            dateClick={handleDateClick} 
+            selectable={true}
             eventContent={(eventInfo) => {
               const type = eventInfo.event.extendedProps.type || "otro";
               return (
@@ -140,6 +150,12 @@ export default function EventsCalendar({ events }: EventsCalendarProps) {
           />
         </div>
       </div>
+      <NewEventFormModal
+        isOpenModal={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        defaultDate={selectedDate}/>
     </div>
+    
   );
+  
 }
