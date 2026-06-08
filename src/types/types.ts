@@ -51,3 +51,13 @@ export interface Event {
   reminder: Date;
   status: string;
 }
+
+export interface FullCalendarEvent {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  status: string;
+  description: string;
+  end_at: string;
+}

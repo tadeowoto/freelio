@@ -77,3 +77,121 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 }
+
+.freelio-calendar-custom-grid .fc {
+  --fc-border-color: var(--color-ash-gray);
+  --fc-page-bg-color: #ffffff;
+}
+
+.freelio-calendar-custom-grid .fc-view-harness {
+  background-color: #ffffff;
+}
+
+.freelio-calendar-custom-grid .fc-theme-standard td,
+.freelio-calendar-custom-grid .fc-theme-standard th {
+  border: 1px solid var(--color-ash-gray) !important;
+}
+
+.freelio-calendar-custom-grid .fc-scrollgrid {
+  border: none !important;
+}
+
+.freelio-calendar-custom-grid .fc-col-header-cell {
+  background-color: #ffffff !important;
+  padding: var(--spacing-2) !important;
+  text-align: left !important;
+}
+
+@media (min-width: 768px) {
+  .freelio-calendar-custom-grid .fc-col-header-cell {
+    padding: var(--spacing-4) !important;
+  }
+}
+
+.freelio-calendar-custom-grid .fc-col-header-cell-cushion {
+  font-family: var(--font-body) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--text-body-sm) !important;
+  color: var(--color-steel-gray) !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+}
+
+.freelio-calendar-custom-grid .fc-day-other {
+  background-color: var(--color-canvas-white) !important;
+}
+
+.freelio-calendar-custom-grid .fc-day-today {
+  background-color: rgba(16, 21, 22, 0.04) !important;
+}
+
+.freelio-calendar-custom-grid .fc-daygrid-day-top {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  padding-top: var(--spacing-2) !important;
+  padding-left: var(--spacing-3) !important;
+}
+
+.freelio-calendar-custom-grid .fc-daygrid-event-harness {
+  margin: 3px var(--spacing-1) 0 var(--spacing-1) !important;
+}
+
+@media (min-width: 768px) {
+  .freelio-calendar-custom-grid .fc-daygrid-event-harness {
+    margin: 3px var(--spacing-3) 0 var(--spacing-3) !important;
+  }
+}
+
+.freelio-calendar-custom-grid .fc-event,
+.freelio-calendar-custom-grid .fc-event-draggable {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  display: block !important;
+  padding: 0 !important;
+}
+
+.freelio-custom-event {
+  width: 100% !important;
+  padding: var(--spacing-1) var(--spacing-2) !important;
+  font-family: var(--font-body) !important;
+  font-size: var(--text-body-sm) !important;
+  font-weight: var(--font-weight-medium) !important;
+  color: #ffffff !important;
+  border-radius: var(--radius-sm) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+@media (min-width: 768px) {
+  .freelio-custom-event {
+    padding: var(--spacing-1) var(--spacing-3) !important;
+  }
+}
+
+.event-pill-reunion {
+  background-color: var(--color-composer-blue) !important;
+}
+.event-pill-deadline {
+  background-color: var(--color-sunset-orange) !important;
+}
+.event-pill-entrega {
+  background-color: var(--color-vivid-green) !important;
+}
+.event-pill-pago {
+  background-color: var(--color-sunny-yellow) !important;
+  color: var(--color-midnight-ink) !important;
+}
+.event-pill-seguimiento {
+  background-color: var(--color-bubblegum-pink) !important;
+  color: var(--color-midnight-ink) !important;
+}
+.event-pill-otro {
+  background-color: var(--color-steel-gray) !important;
+}
+
+.freelio-calendar-custom-grid .fc-daygrid-day:hover {
+  background-color: var(--color-canvas-white);
+}
