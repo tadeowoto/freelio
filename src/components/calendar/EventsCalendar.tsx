@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { FullCalendarEvent } from "../../types/types";
+import NewEventButton from "./NewEventButton";
 
 interface EventsCalendarProps {
   events: FullCalendarEvent[];
@@ -75,9 +76,7 @@ export default function EventsCalendar({ events }: EventsCalendarProps) {
             </button>
           </div>
 
-          <button className="h-10 px-5 sm:px-6 flex items-center gap-2 bg-sunset-orange text-white border-none rounded-sm font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity select-none flex-1 sm:flex-none justify-center">
-            <span className="text-xl font-bold">+</span> Nuevo evento
-          </button>
+          <NewEventButton />
         </div>
       </div>
 
