@@ -33,6 +33,7 @@ const formattedEvents = events.map((event) => {
     status: event.status,
     description: event.description,
     end_at: event.end_at ? event.end_at.substring(0, 10) : "",
+    client_id: event.client_id,
   };
 });
 

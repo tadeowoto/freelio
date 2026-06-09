@@ -6,22 +6,45 @@ import type { FullCalendarEvent, Client } from "../../types/types";
 import NewEventButton from "./NewEventButton";
 import NewEventFormModal from "./NewEventFormModal";
 
-
-
 interface EventsCalendarProps {
   clients?: Client[];
   events: FullCalendarEvent[];
-
 }
 
-export default function EventsCalendar({ events, clients }: EventsCalendarProps)  {
-  const calendarRef = useRef<FullCalendar >(null);
+export default function EventsCalendar({
+  events,
+  clients,
+}: EventsCalendarProps) {
+  const calendarRef = useRef<FullCalendar>(null);
   const [currentTitle, setCurrentTitle] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
 
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
   const handleDateClick = (info: { dateStr: string }) => {
+    setIsEdit(false);
+    setSelectedEvent(null);
     setSelectedDate(`${info.dateStr}T09:00`);
+    setIsModalOpen(true);
+  };
+
+  const handleEventClick = (clickInfo: any) => {
+    setIsEdit(true);
+
+    const eventNode = clickInfo.event;
+    setSelectedEvent({
+      id: eventNode.id,
+      title: eventNode.title,
+      start_at: eventNode.startStr ? eventNode.startStr.substring(0, 16) : "",
+      end_at: eventNode.endStr ? eventNode.endStr.substring(0, 16) : "",
+      type: eventNode.extendedProps.type,
+      status: eventNode.extendedProps.status,
+      description: eventNode.extendedProps.description,
+      client_id: eventNode.extendedProps.client_id,
+    });
+
     setIsModalOpen(true);
   };
 
@@ -125,12 +148,15 @@ export default function EventsCalendar({ events, clients }: EventsCalendarProps)
             height="100%"
             locale="es"
             events={events}
-            dateClick={handleDateClick} 
+            dateClick={handleDateClick}
+            eventClick={handleEventClick} // Capturador nativo de clics en celdas ocupadas
             selectable={true}
             eventContent={(eventInfo) => {
               const type = eventInfo.event.extendedProps.type || "otro";
               return (
-                <div className={`freelio-custom-event event-pill-${type}`}>
+                <div
+                  className={`freelio-custom-event event-pill-${type} cursor-pointer`}
+                >
                   <span className="truncate">{eventInfo.event.title}</span>
                 </div>
               );
@@ -154,15 +180,15 @@ export default function EventsCalendar({ events, clients }: EventsCalendarProps)
           />
         </div>
       </div>
+
       <NewEventFormModal
         isOpenModal={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         defaultDate={selectedDate}
         IsEdit={isEdit}
-        eventData={eventData}
-        />
+        eventData={selectedEvent}
+        clients={clients}
+      />
     </div>
-    
   );
-  
 }

@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import type { EventFormValues, EventClient } from "../../types/types";
+import type { EventFormValues, EventClient, Client } from "../../types/types";
 
 type NewEventFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
-  defaultDate?: string; 
+  defaultDate?: string;
   IsEdit?: boolean;
-  eventData?: EventClient; 
+  eventData?: any;
+  clients?: Client[];
 };
 
 const EVENT_TYPES = [
@@ -24,6 +25,7 @@ export default function NewEventFormModal({
   defaultDate,
   IsEdit,
   eventData,
+  clients = [],
 }: NewEventFormModalProps) {
   if (!isOpenModal) return null;
 
@@ -36,41 +38,72 @@ export default function NewEventFormModal({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<EventFormValues>({
     defaultValues: {
-        start_at: defaultDate ?? "",
+      title: "",
+      description: "",
+      start_at: defaultDate ?? "",
+      end_at: "",
+      client_id: "",
     },
   });
 
   const [eventType, setEventType] = useState("reunion");
-  const [allDay] = useState(false);
   const [recordatorio, setRecordatorio] = useState("");
 
+  useEffect(() => {
+    if (IsEdit && eventData) {
+      reset({
+        title: eventData.title || "",
+        description: eventData.description || "",
+        start_at: eventData.start_at || "",
+        end_at: eventData.end_at || "",
+        client_id: eventData.client_id ? String(eventData.client_id) : "",
+      });
+      setEventType(eventData.type || "reunion");
+    } else {
+      reset({
+        title: "",
+        description: "",
+        start_at: defaultDate || "",
+        end_at: "",
+        client_id: "",
+      });
+      setEventType("reunion");
+    }
+  }, [IsEdit, eventData, defaultDate, reset, isOpenModal]);
+
   const onSubmit = handleSubmit(async (data) => {
-    const formData = {
+    const formData: any = {
       client_id: data.client_id || null,
       title: data.title,
       description: data.description,
-      type: eventType,  
+      type: eventType,
       start_at: data.start_at,
       end_at: data.end_at || null,
-      //reminder: recordatorio || null,
-      status: data.status || null,
+      status: data.status || "pendiente",
     };
+    if (IsEdit && eventData?.id) {
+      formData.id = eventData.id;
+    }
 
     try {
-      const response = await fetch("/api/events", {
-        method: "POST",
+      const endpoint = IsEdit ? "/api/edit/events" : "/api/events";
+      const method = IsEdit ? "PATCH" : "POST";
+
+      const response = await fetch(endpoint, {
+        method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-  const errorData = await response.json();
-  console.error("API error:", errorData);
-  throw new Error(errorData.error || "Error al guardar");
-}
+        const errorData = await response.json();
+        console.error("API error:", errorData);
+        throw new Error(errorData.error || "Error al guardar");
+      }
 
       onClose();
       window.location.reload();
@@ -109,8 +142,9 @@ export default function NewEventFormModal({
           className="p-8 pt-16 flex flex-col gap-6 text-graphite"
         >
           <h1 className="font-sans text-4xl font-bold text-(--text-heading) tracking-heading text-midnight-ink mb-2">
-            Nuevo evento
+            {IsEdit ? "Editar evento" : "Nuevo evento"}
           </h1>
+
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
@@ -162,18 +196,23 @@ export default function NewEventFormModal({
                 className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
               >
                 <option value="">— Sin cliente —</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.name} {client.company ? `(${client.company})` : ""}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
+
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                   Fecha inicio
                 </label>
                 <input
-                  type={allDay ? "date" : "datetime-local"}
+                  type="datetime-local"
                   className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
                   {...register("start_at", {
                     required: "La fecha de inicio es obligatoria",
@@ -186,18 +225,16 @@ export default function NewEventFormModal({
                 )}
               </div>
 
-              {!allDay && (
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-                    Fecha fin
-                  </label>
-                  <input
-                    type="datetime-local"
-                    className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                    {...register("end_at")}
-                  />
-                </div>
-              )}
+              <div className="flex flex-col gap-1.5">
+                <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+                  Fecha fin
+                </label>
+                <input
+                  type="datetime-local"
+                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                  {...register("end_at")}
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -220,7 +257,6 @@ export default function NewEventFormModal({
           </div>
 
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            
             <div className="flex flex-col gap-1.5">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                 Descripción
@@ -245,7 +281,7 @@ export default function NewEventFormModal({
               type="submit"
               className="h-10 px-6 bg-composer-blue text-white border-none rounded-md font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
             >
-              Crear evento
+              {IsEdit ? "Guardar cambios" : "Crear evento"}
             </button>
           </div>
         </form>
@@ -253,5 +289,3 @@ export default function NewEventFormModal({
     </div>
   );
 }
-
-  
