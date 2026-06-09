@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type { EventFormValues} from "../../types/types";
+import type { EventFormValues, EventClient } from "../../types/types";
 
 type NewEventFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
   defaultDate?: string; 
+  IsEdit?: boolean;
+  eventData?: EventClient; 
 };
 
 const EVENT_TYPES = [
@@ -20,6 +22,8 @@ export default function NewEventFormModal({
   isOpenModal,
   onClose,
   defaultDate,
+  IsEdit,
+  eventData,
 }: NewEventFormModalProps) {
   if (!isOpenModal) return null;
 

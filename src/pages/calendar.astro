@@ -35,8 +35,17 @@ const formattedEvents = events.map((event) => {
     end_at: event.end_at ? event.end_at.substring(0, 10) : "",
   };
 });
+
+let { data: clients } = await supabase
+  .from("clients")
+  .select("*")
+  .eq("user_id", user.id);
+
+if (!clients) {
+  clients = [];
+}
 ---
 
 <MainLayout>
-  <EventsCalendar client:load events={formattedEvents} />
+  <EventsCalendar client:load events={formattedEvents} clients={clients} />
 </MainLayout>

@@ -2,15 +2,19 @@ import { useRef, useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import type { FullCalendarEvent } from "../../types/types";
+import type { FullCalendarEvent, Client } from "../../types/types";
 import NewEventButton from "./NewEventButton";
 import NewEventFormModal from "./NewEventFormModal";
 
+
+
 interface EventsCalendarProps {
+  clients?: Client[];
   events: FullCalendarEvent[];
+
 }
 
-export default function EventsCalendar({ events }: EventsCalendarProps) {
+export default function EventsCalendar({ events, clients }: EventsCalendarProps)  {
   const calendarRef = useRef<FullCalendar >(null);
   const [currentTitle, setCurrentTitle] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -153,7 +157,10 @@ export default function EventsCalendar({ events }: EventsCalendarProps) {
       <NewEventFormModal
         isOpenModal={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        defaultDate={selectedDate}/>
+        defaultDate={selectedDate}
+        IsEdit={isEdit}
+        eventData={eventData}
+        />
     </div>
     
   );

@@ -71,3 +71,13 @@ export type EventFormValues = {
   reminder?: string;
   status?: string;
 };
+
+export type EventClient = {
+  title: string;
+  description?: string;
+  start_at: string;
+  end_at?: string;
+  reminder?: string;
+  status?: string;
+  clients: Client[];
+}
