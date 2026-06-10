@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import type { EventFormValues, EventClient, Client } from "../../types/types";
+import type { EventFormValues, Client } from "../../types/types";
 
 type NewEventFormModalProps = {
   isOpenModal: boolean;
@@ -39,6 +39,7 @@ export default function NewEventFormModal({
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<EventFormValues>({
     defaultValues: {
@@ -51,7 +52,33 @@ export default function NewEventFormModal({
   });
 
   const [eventType, setEventType] = useState("reunion");
-  const [recordatorio, setRecordatorio] = useState("");
+
+  const [reminderEnabled, setReminderEnabled] = useState(false);
+
+
+  const startAt = watch("start_at");
+
+
+  const getReminderTimestamp = (startAtValue: string): string | null => {
+    if (!startAtValue) return null;
+    const start = new Date(startAtValue);
+    if (isNaN(start.getTime())) return null;
+    start.setDate(start.getDate() - 1);
+    return start.toISOString();
+  };
+
+
+  const formatReminderDate = (startAtValue: string): string => {
+    const ts = getReminderTimestamp(startAtValue);
+    if (!ts) return "1 día antes del inicio";
+    return new Date(ts).toLocaleString("es-ES", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   useEffect(() => {
     if (IsEdit && eventData) {
@@ -63,6 +90,8 @@ export default function NewEventFormModal({
         client_id: eventData.client_id ? String(eventData.client_id) : "",
       });
       setEventType(eventData.type || "reunion");
+
+      setReminderEnabled(!!eventData.reminder);
     } else {
       reset({
         title: "",
@@ -72,10 +101,20 @@ export default function NewEventFormModal({
         client_id: "",
       });
       setEventType("reunion");
+      setReminderEnabled(false);
     }
   }, [IsEdit, eventData, defaultDate, reset, isOpenModal]);
 
   const onSubmit = handleSubmit(async (data) => {
+
+    const reminderTimestamp = reminderEnabled
+      ? getReminderTimestamp(data.start_at)
+      : null;
+
+
+    const startAtChanged =
+      IsEdit && eventData?.start_at && data.start_at !== eventData.start_at;
+
     const formData: any = {
       client_id: data.client_id || null,
       title: data.title,
@@ -84,7 +123,11 @@ export default function NewEventFormModal({
       start_at: data.start_at,
       end_at: data.end_at || null,
       status: data.status || "pendiente",
+      reminder: reminderTimestamp, 
+
+      ...(IsEdit && { reminder_sent: startAtChanged ? false : eventData?.reminder_sent ?? false }),
     };
+
     if (IsEdit && eventData?.id) {
       formData.id = eventData.id;
     }
@@ -118,6 +161,7 @@ export default function NewEventFormModal({
       onClick={handleBackdropClick}
     >
       <div className="bg-white w-full max-w-[720px] max-h-[90vh] rounded-xl shadow-(--shadow-dark) overflow-y-auto relative flex flex-col">
+
         <div className="absolute top-0 left-0 w-full h-12 pointer-events-none overflow-hidden select-none">
           <div className="absolute top-0 left-0 w-12 h-12 bg-vivid-green"></div>
           <div className="absolute top-0 left-20 w-16 h-4 bg-bubblegum-pink"></div>
@@ -129,6 +173,7 @@ export default function NewEventFormModal({
           <div className="absolute top-0 right-8 w-16 h-6 bg-sunny-yellow"></div>
           <div className="absolute top-6 right-0 w-8 h-8 bg-composer-blue"></div>
         </div>
+
         <button
           type="button"
           onClick={onClose}
@@ -144,6 +189,7 @@ export default function NewEventFormModal({
           <h1 className="font-sans text-4xl font-bold text-(--text-heading) tracking-heading text-midnight-ink mb-2">
             {IsEdit ? "Editar evento" : "Nuevo evento"}
           </h1>
+
 
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
@@ -205,6 +251,7 @@ export default function NewEventFormModal({
             </div>
           </div>
 
+
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
@@ -237,24 +284,74 @@ export default function NewEventFormModal({
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
+
+            <div className="flex flex-col gap-2">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                 Recordatorio
               </label>
-              <select
-                {...register("reminder")}
-                value={recordatorio}
-                onChange={(e) => setRecordatorio(e.target.value)}
-                className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
+
+              <label
+                className={`flex items-center gap-3 h-10 px-3 rounded-md border cursor-pointer transition-all select-none ${
+                  reminderEnabled
+                    ? "border-composer-blue bg-composer-blue/5"
+                    : "border-ash-gray bg-white hover:border-composer-blue/50"
+                }`}
               >
-                <option value="">Sin recordatorio</option>
-                <option value="15min">15 minutos antes</option>
-                <option value="30min">30 minutos antes</option>
-                <option value="1h">1 hora antes</option>
-                <option value="1d">1 día antes</option>
-              </select>
+
+                <input
+                  type="checkbox"
+                  checked={reminderEnabled}
+                  onChange={(e) => setReminderEnabled(e.target.checked)}
+                  className="sr-only"
+                />
+
+
+                <span
+                  className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                    reminderEnabled
+                      ? "bg-composer-blue border-composer-blue"
+                      : "bg-white border-ash-gray"
+                  }`}
+                >
+                  {reminderEnabled && (
+                    <svg
+                      width="10"
+                      height="8"
+                      viewBox="0 0 10 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 3.5L3.8 6.5L9 1"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </span>
+
+                <span className="font-body text-(--text-body-sm) text-graphite flex-1">
+                  Recordatorio 1 día antes
+                </span>
+
+
+                {reminderEnabled && startAt && (
+                  <span className="font-body text-[11px] text-composer-blue font-medium">
+                    {formatReminderDate(startAt)}
+                  </span>
+                )}
+              </label>
+
+              {reminderEnabled && !startAt && (
+                <span className="font-body text-[11px] text-steel-gray">
+                  Definí la fecha de inicio para calcular el recordatorio.
+                </span>
+              )}
             </div>
           </div>
+
 
           <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
@@ -268,6 +365,7 @@ export default function NewEventFormModal({
               />
             </div>
           </div>
+
 
           <div className="w-full flex flex-row items-center justify-end gap-4 mt-2 border-t border-canvas-white pt-4">
             <button
