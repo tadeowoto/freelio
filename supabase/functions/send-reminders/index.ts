@@ -46,6 +46,8 @@ Deno.serve(async () => {
     const client = (event as any).clients;
     const profile = (event as any).profiles;
 
+    const clientName = client?.name ?? "Sin cliente";
+
     const emailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -126,7 +128,7 @@ Deno.serve(async () => {
 
                     <p style="margin:0 0 4px 0;font-size:14px;color:#bec6cc;letter-spacing:0.224px;">Cliente</p>
                     <p style="margin:0;font-size:16px;font-weight:500;color:#101516;letter-spacing:0.4px;">
-                      ${client.name}
+                      ${clientName}
                     </p>
                   </td>
                 </tr>
