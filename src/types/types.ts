@@ -28,15 +28,16 @@ export interface Client {
   id: string;
   name: string;
   company: string | null;
-  industry: string | null;
   email: string | null;
   phone: string | null;
-  rate: number | null;
-  rate_type: string | null;
   payment_status: string | null;
+  payment_method: string | null;
+  first_contact_at: string | null;
   last_contact_at: string | null;
   notes: string | null;
   status: string;
+  fee: number | null;
+  
 }
 
 export interface Event {

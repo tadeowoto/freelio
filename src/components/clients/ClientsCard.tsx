@@ -1,4 +1,4 @@
-interface Client {
+export interface ClientCardInterface {
   id: string;
   name: string;
   company: string;
@@ -11,7 +11,7 @@ interface Client {
   };
 }
 
-export default function ClientsCard({ client }: { client: Client }) {
+export default function ClientsCard({ client }: { client: ClientCardInterface }) {
   const clientColors = client.brand_kits?.colors || [];
 
   return (

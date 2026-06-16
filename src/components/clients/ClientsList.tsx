@@ -1,6 +1,5 @@
 import { useState } from "react";
-import ClientsCard from "./ClientsCard";
-import type { Client } from "../../types/types";
+import ClientsCard, { type ClientCardInterface } from "./ClientsCard";
 
 
 type Filter = "all" | "active" | "inactive";
@@ -11,7 +10,7 @@ const filterButtons: { label: string; value: Filter }[] = [
   { label: "Inactivos", value: "inactive" },
 ];
 
-export default function ClientsList({ clients }: { clients: Client[] }) {
+export default function ClientsList({ clients }: { clients: ClientCardInterface[] }) {
   const [filter, setFilter] = useState<Filter>("all");
 
   const filtered = clients.filter((client) => {
