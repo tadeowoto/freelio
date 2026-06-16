@@ -1,7 +1,8 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import { clientsMock } from "../mocks/clients";
-import ClientsCard from "../components/clients/ClientsCard.astro";
+import ClientsCard from "../components/clients/ClientsCard.tsx";
+import ClientsList from "../components/clients/ClientsList.tsx";
 import { createClient } from "../lib/supabase.ts";
 import NewClientButton from "../components/clients/NewClientButton.tsx";
 
@@ -40,26 +41,6 @@ if (!clients) return Astro.redirect("/");
       <NewClientButton client:load />
     </div>
 
-    <div class="flex flex-row items-center gap-3">
-      <button
-        class="px-4 h-8 flex items-center justify-center bg-midnight-ink font-body font-medium text-(--text-body-sm) rounded-full cursor-pointer"
-      >
-        Todos
-      </button>
-      <button
-        class="px-4 h-8 flex items-center justify-center text-graphite bg-white border border-ash-gray font-body font-medium rounded-full cursor-pointer hover:bg-canvas-white transition-colors"
-      >
-        Activos
-      </button>
-      <button
-        class="px-4 h-8 flex items-center justify-center text-graphite bg-white border border-ash-gray font-body font-medium rounded-full cursor-pointer hover:bg-canvas-white transition-colors"
-      >
-        Inactivos
-      </button>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {clients?.map((client) => <ClientsCard client={client} />)}
-    </div>
+    <ClientsList client:load clients={clients} />
   </div>
 </MainLayout>
