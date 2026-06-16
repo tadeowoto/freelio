@@ -6,7 +6,7 @@ const avatarColors = [
   "bg-bubblegum-pink",
   "bg-vivid-green",
   "bg-sunny-yellow",
-  "bg-emerald-green",
+  "bg-hot-pink",
 ];
 
 function clientInitials(name: string) {
@@ -24,32 +24,32 @@ const isActive = client.status === "activo";
 
 <a
   href={`/clients/${client.id}`}
-  class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0 no-underline group"
+  class="flex items-center justify-between py-4 border-b border-ash-gray last:border-0 no-underline group hover:bg-canvas-white/50 transition-colors"
 >
-  <div class="flex items-center gap-3">
+  <div class="flex items-center gap-4">
     <div
-      class={`w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center shrink-0`}
+      class={`w-12 h-12 rounded-full ${avatarColor} flex items-center justify-center shrink-0`}
     >
-      <span class="text-white font-bold text-sm">
+      <span class="text-white font-display font-bold text-body">
         {initials}
       </span>
     </div>
-    <div>
+    <div class="flex flex-col justify-center">
       <p
-        class="font-semibold text-sm text-midnight-ink mb-0.5 group-hover:underline"
+        class="font-display font-bold text-subheading text-midnight-ink leading-none mb-1 group-hover:text-composer-blue transition-colors"
       >
         {client.name}
       </p>
-      <p class="text-steel-gray text-sm">
+      <p class="font-body text-body-sm text-iron leading-none">
         {client.company ?? "Sin empresa"}
       </p>
     </div>
   </div>
   <span
-    class={`text-xs px-3 py-1 rounded-full font-medium shrink-0 ml-4 ${
+    class={`font-body text-body-sm px-4 py-1.5 rounded-full font-medium shrink-0 ml-4 border ${
       isActive
-        ? "bg-vivid-green/10 text-emerald-green"
-        : "bg-ash-gray/30 text-steel-gray"
+        ? "bg-vivid-green border-vivid-green text-white"
+        : "bg-canvas-white border-ash-gray text-steel-gray"
     }`}
   >
     {isActive ? "Activo" : "Inactivo"}

@@ -159,69 +159,85 @@ export default function NewBrandKitFormModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px] p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white w-full max-w-[720px] max-h-[90vh] rounded-xl shadow-(--shadow-dark) overflow-y-auto relative flex flex-col">
-        <BrandKitModalHeader onClose={onClose} />
+      <div className="bg-canvas-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar">
+        <div className="absolute top-0 left-0 w-full h-40 pointer-events-none overflow-hidden select-none rounded-t-2xl z-0">
+          <div className="absolute top-0 left-0 w-24 h-24 bg-vivid-green"></div>
+          <div className="absolute top-0 left-24 w-16 h-8 bg-bubblegum-pink"></div>
+          <div className="absolute top-0 right-32 w-16 h-8 bg-vivid-green opacity-90"></div>
+          <div className="absolute top-0 right-16 w-16 h-12 bg-sunny-yellow"></div>
+          <div className="absolute top-8 right-0 w-16 h-16 bg-composer-blue"></div>
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-ash-gray text-midnight-ink font-bold text-lg cursor-pointer hover:bg-canvas-white transition-colors z-20 shadow-sm"
+        >
+          &times;
+        </button>
 
         <form
           onSubmit={onSubmit}
-          className="p-8 pt-16 flex flex-col gap-6 text-graphite"
+          className="p-8 pt-20 flex flex-col gap-6 relative z-10 w-full"
         >
-          <div className="flex flex-col gap-0.5 mb-2">
-            <span className="font-body text-(--text-body-sm) font-bold text-steel-gray uppercase tracking-wider">
+          <div className="flex flex-col gap-1 mb-2">
+            <span className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
               María García
             </span>
-            <h1 className="font-sans text-4xl font-bold text-(--text-heading) tracking-heading text-midnight-ink">
+            <h1 className="font-display font-bold text-[48px] tracking-tighter text-midnight-ink leading-none">
               {isEdit ? "Editar brand kit" : "Nuevo brand kit"}
             </h1>
           </div>
 
-          <ColorSection
-            fields={colorFields}
-            register={register}
-            onAdd={handleAddColorClick}
-            onRemove={removeColor}
-          />
-
-          <FontSection
-            fields={fontFields}
-            register={register}
-            onAdd={handleAddFontClick}
-            onRemove={removeFont}
-          />
-
-          <AssetSection
-            fields={assetFields}
-            register={register}
-            onAdd={handleAddAssetClick}
-            onRemove={removeAsset}
-          />
-
-          <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <h2 className="font-sans font-bold text-base text-midnight-ink">
-              Notas de estilo
-            </h2>
-            <textarea
-              rows={4}
-              placeholder="Editorial, fotografía analógica, mucho aire. Evitar gradientes."
-              className="border border-ash-gray rounded-md p-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue resize-none transition-all"
-              {...register("notes")}
+          <div className="bg-white border border-ash-gray rounded-xl p-6 md:p-8 flex flex-col gap-8 w-full">
+            <ColorSection
+              fields={colorFields}
+              register={register}
+              onAdd={handleAddColorClick}
+              onRemove={removeColor}
             />
+
+            <FontSection
+              fields={fontFields}
+              register={register}
+              onAdd={handleAddFontClick}
+              onRemove={removeFont}
+            />
+
+            <AssetSection
+              fields={assetFields}
+              register={register}
+              onAdd={handleAddAssetClick}
+              onRemove={removeAsset}
+            />
+
+            <div className="flex flex-col gap-3">
+              <h2 className="font-display font-bold text-[20px] text-midnight-ink leading-none tracking-tight">
+                Notas de estilo
+              </h2>
+              <textarea
+                rows={4}
+                placeholder="Editorial, fotografía analógica, mucho aire. Evitar gradientes."
+                className="border border-ash-gray rounded-md p-4 font-body text-[14px] text-midnight-ink outline-none focus:border-cadet-blue transition-all resize-none w-full"
+                {...register("notes")}
+              />
+            </div>
           </div>
 
-          <div className="w-full flex flex-row items-center justify-end gap-4 mt-2 border-t border-canvas-white pt-4">
+          <div className="w-full flex flex-row items-center justify-end gap-6 pt-2 pb-2">
             <button
               type="button"
               onClick={onClose}
-              className="h-10 px-4 font-body font-medium text-(--text-body-sm) text-graphite bg-transparent border-none cursor-pointer hover:underline"
+              className="font-body font-bold text-[16px] text-midnight-ink bg-transparent border-none cursor-pointer hover:underline outline-none"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="h-10 px-6 bg-composer-blue text-white border-none rounded-md font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
+              className="h-12 px-8 bg-cadet-blue text-white border-none rounded-full font-body font-bold text-[16px] cursor-pointer hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-cadet-blue/50 focus:ring-offset-2"
             >
               Guardar brand kit
             </button>

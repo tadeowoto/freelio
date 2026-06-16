@@ -3,67 +3,91 @@ export interface ClientCardInterface {
   name: string;
   company: string;
   status: string;
-  rate: number;
-  rate_type: "por_hora" | "por_proyecto" | "mensual";
+  fee: number | null;
+  payment_method: "por_hora" | "por_proyecto" | "mensual" | null;
   last_contact_at: string;
-  brand_kits?: {
+  brand_kits?: Array<{
     colors: Array<{ name: string; hex: string }> | string[];
-  };
+  }>;
 }
 
-export default function ClientsCard({ client }: { client: ClientCardInterface }) {
-  const clientColors = client.brand_kits?.colors || [];
+export default function ClientsCard({
+  client,
+}: {
+  client: ClientCardInterface;
+}) {
+  const clientColors = client.brand_kits?.[0]?.colors || [];
+  const fechaContacto = client.last_contact_at
+    ? client.last_contact_at.split("T")[0]
+    : "--";
 
   return (
-    <a href={`/clients/${client.id}`} className="block group">
-      <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col justify-between min-h-[200px] transition-transform duration-150 hover:scale-[1.01]">
+    <a href={`/clients/${client.id}`} className="block group w-full h-full">
+      <div className="bg-white border border-ash-gray rounded-2xl p-6 flex flex-col justify-between h-full hover:bg-canvas-white/50 transition-colors cursor-pointer">
         <div className="flex flex-row justify-between items-start">
           <div className="flex flex-col">
-            <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink">
+            <h2 className="font-display font-bold text-subheading text-midnight-ink leading-none mb-1.5 group-hover:text-composer-blue transition-colors">
               {client.name}
             </h2>
-            <span className="font-body text-steel-gray mt-0.5">
+            <span className="font-body text-body-sm text-iron leading-none">
               {client.company || "Sin empresa"}
             </span>
           </div>
 
-          {client.status === "activo" ? (
-            <span className="px-3 py-0.5 font-body font-medium rounded-full bg-vivid-green text-white text-(--text-body-sm)">
-              Activo
-            </span>
-          ) : (
-            <span className="px-3 py-0.5 font-body font-medium rounded-full bg-ash-gray text-steel-gray text-(--text-body-sm)">
-              Inactivo
-            </span>
-          )}
+          <span
+            className={`font-body text-body-sm px-4 py-1.5 rounded-full font-medium shrink-0 ml-4 border ${
+              client.status === "activo"
+                ? "bg-vivid-green border-vivid-green text-white"
+                : "bg-canvas-white border-ash-gray text-steel-gray"
+            }`}
+          >
+            {client.status === "activo" ? "Activo" : "Inactivo"}
+          </span>
         </div>
 
-        <div className="flex flex-row gap-2 my-4 min-h-6">
+        <div className="flex flex-row items-center mt-6 mb-8 min-h-[32px]">
           {clientColors.length > 0 ? (
             clientColors.map((color, index) => {
               const hexColor = typeof color === "string" ? color : color.hex;
               return (
                 <div
                   key={index}
-                  className="w-6 h-6 rounded-full border border-ash-gray shadow-sm"
+                  className={`w-8 h-8 rounded-full border-2 border-white ${
+                    index !== 0 ? "-ml-2" : ""
+                  }`}
                   style={{ backgroundColor: hexColor }}
                 />
               );
             })
           ) : (
-            <span className="font-body text-[12px] text-steel-gray italic">
+            <span className="font-body text-body-sm text-steel-gray">
               Sin paleta asignada
             </span>
           )}
         </div>
 
-        <div className="grid grid-cols-2 border-t border-canvas-white pt-4">
-          <div className="flex flex-col">
-            <span className="font-body text-[12px] text-steel-gray">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <span className="font-body text-body-sm text-iron leading-none">
+              Tarifa
+            </span>
+            <span className="font-display font-bold text-body text-midnight-ink leading-none">
+              {client.fee !== null ? `$${client.fee}` : "--"}
+              {client.payment_method === "por_hora"
+                ? "/h"
+                : client.payment_method === "mensual"
+                  ? "/mes"
+                  : client.payment_method === "por_proyecto"
+                    ? "/proy"
+                    : ""}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="font-body text-body-sm text-iron leading-none">
               Último contacto
             </span>
-            <span className="font-sans font-medium text-graphite mt-0.5 text-(--text-body-sm)">
-              {client.last_contact_at}
+            <span className="font-display font-bold text-body text-midnight-ink leading-none">
+              {fechaContacto}
             </span>
           </div>
         </div>

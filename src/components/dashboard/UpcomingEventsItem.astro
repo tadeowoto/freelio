@@ -27,22 +27,22 @@ const nombreCliente = Array.isArray(evento.clients)
 ---
 
 <div
-  class="flex items-center justify-between py-3 border-b border-ash-gray last:border-0"
+  class="flex items-center justify-between py-4 border-b border-ash-gray last:border-0 group hover:bg-canvas-white/50 transition-colors cursor-pointer"
 >
-  <div class="flex items-center gap-3">
-    <div class={`w-1 h-10 rounded-full ${colorBarra} shrink-0`}></div>
-    <div>
-      <p class="font-semibold text-sm text-midnight-ink mb-0.5">
+  <div class="flex items-center gap-4">
+    <div class={`w-1.5 h-10 rounded-full ${colorBarra} shrink-0`}></div>
+    <div class="flex flex-col justify-center">
+      <p class="font-display font-bold text-body text-midnight-ink leading-none mb-1.5 group-hover:text-composer-blue transition-colors">
         {evento.title}
       </p>
-      <p class="text-steel-gray text-sm capitalize">
+      <p class="font-body text-body-sm text-iron leading-none capitalize">
         {nombreCliente ? `${nombreCliente} · ` : ""}
         {evento.type}
       </p>
     </div>
   </div>
-  <div class="text-right shrink-0 ml-4">
-    <p class="text-sm text-midnight-ink mb-0.5">{fecha}</p>
-    <p class="text-sm text-steel-gray">{hora}</p>
+  <div class="flex flex-col items-end justify-center shrink-0 ml-4">
+    <p class="font-body font-medium text-body-sm text-midnight-ink leading-none mb-1.5">{fecha}</p>
+    <p class="font-body text-body-sm text-iron leading-none">{hora}</p>
   </div>
 </div>

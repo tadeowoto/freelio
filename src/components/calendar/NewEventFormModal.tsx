@@ -55,9 +55,7 @@ export default function NewEventFormModal({
 
   const [reminderEnabled, setReminderEnabled] = useState(false);
 
-
   const startAt = watch("start_at");
-
 
   const getReminderTimestamp = (startAtValue: string): string | null => {
     if (!startAtValue) return null;
@@ -66,7 +64,6 @@ export default function NewEventFormModal({
     start.setDate(start.getDate() - 1);
     return start.toISOString();
   };
-
 
   const formatReminderDate = (startAtValue: string): string => {
     const ts = getReminderTimestamp(startAtValue);
@@ -106,11 +103,9 @@ export default function NewEventFormModal({
   }, [IsEdit, eventData, defaultDate, reset, isOpenModal]);
 
   const onSubmit = handleSubmit(async (data) => {
-
     const reminderTimestamp = reminderEnabled
       ? getReminderTimestamp(data.start_at)
       : null;
-
 
     const startAtChanged =
       IsEdit && eventData?.start_at && data.start_at !== eventData.start_at;
@@ -123,9 +118,13 @@ export default function NewEventFormModal({
       start_at: data.start_at,
       end_at: data.end_at || null,
       status: data.status || "pendiente",
-      reminder: reminderTimestamp, 
+      reminder: reminderTimestamp,
 
-      ...(IsEdit && { reminder_sent: startAtChanged ? false : eventData?.reminder_sent ?? false }),
+      ...(IsEdit && {
+        reminder_sent: startAtChanged
+          ? false
+          : (eventData?.reminder_sent ?? false),
+      }),
     };
 
     if (IsEdit && eventData?.id) {
@@ -157,74 +156,96 @@ export default function NewEventFormModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px] p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 sm:p-6"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white w-full max-w-[720px] max-h-[90vh] rounded-xl shadow-(--shadow-dark) overflow-y-auto relative flex flex-col">
+      <div className="bg-canvas-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar">
+        <div className="absolute top-0 left-0 w-full h-40 pointer-events-none overflow-hidden select-none rounded-t-2xl z-0">
+          <div className="absolute top-0 left-0 w-32 h-24 bg-cadet-blue"></div>
+          <div className="absolute top-0 left-32 w-16 h-12 bg-sunny-yellow"></div>
 
-        <div className="absolute top-0 left-0 w-full h-12 pointer-events-none overflow-hidden select-none">
-          <div className="absolute top-0 left-0 w-12 h-12 bg-vivid-green"></div>
-          <div className="absolute top-0 left-20 w-16 h-4 bg-bubblegum-pink"></div>
-          <div className="absolute top-0 right-24 w-12 h-4 bg-vivid-green opacity-90 grid grid-cols-4 gap-1 p-1">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-white/30 w-1 h-1 rounded-full"></div>
-            ))}
+          <div className="absolute top-4 right-32 w-20 h-10 bg-cadet-blue mix-blend-multiply opacity-50">
+            <div
+              className="w-full h-full opacity-30"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 2px 2px, black 1px, transparent 0)",
+                backgroundSize: "8px 8px",
+              }}
+            ></div>
           </div>
-          <div className="absolute top-0 right-8 w-16 h-6 bg-sunny-yellow"></div>
-          <div className="absolute top-6 right-0 w-8 h-8 bg-composer-blue"></div>
+          <div className="absolute top-4 right-12 w-24 h-10 bg-bubblegum-pink mix-blend-multiply"></div>
+          <div className="absolute top-12 right-0 w-16 h-20 bg-vivid-green"></div>
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-10 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-canvas-white border border-ash-gray text-graphite font-body font-medium text-lg cursor-pointer hover:bg-ash-gray/50 transition-colors z-10"
+          className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-ash-gray text-midnight-ink font-body font-medium text-lg cursor-pointer hover:bg-canvas-white transition-colors z-20 shadow-sm"
         >
-          &times;
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L13 13M1 13L13 1"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
 
         <form
           onSubmit={onSubmit}
-          className="p-8 pt-16 flex flex-col gap-6 text-graphite"
+          className="p-6 md:p-8 pt-16 flex flex-col gap-6 relative z-10 w-full"
         >
-          <h1 className="font-sans text-4xl font-bold text-(--text-heading) tracking-heading text-midnight-ink mb-2">
+          <h1 className="font-display font-bold text-[48px] md:text-[56px] tracking-tighter text-midnight-ink leading-none mb-2 mix-blend-multiply">
             {IsEdit ? "Editar evento" : "Nuevo evento"}
           </h1>
 
+          <div className="bg-white border border-ash-gray rounded-xl p-6 md:p-8 flex flex-col gap-6 w-full">
+            <h2 className="font-display font-bold text-[20px] text-midnight-ink leading-none tracking-tight">
+              Detalles
+            </h2>
 
-          <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                 Título del evento
               </label>
               <input
                 type="text"
                 placeholder="Kickoff branding"
-                className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                className="w-full border-b border-ash-gray pb-2 pt-1 font-display font-bold text-[32px] md:text-[40px] text-midnight-ink placeholder:text-steel-gray/60 outline-none focus:border-cadet-blue bg-transparent transition-colors tracking-tight"
                 {...register("title", {
                   required: "El título es obligatorio",
                 })}
               />
               {errors.title && (
-                <span className="font-body text-[11px] text-action-red">
+                <span className="font-body text-[11px] text-action-red mt-1">
                   {errors.title.message as string}
                 </span>
               )}
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-3">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                 Tipo de evento
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {EVENT_TYPES.map((type) => (
                   <button
                     key={type.value}
                     type="button"
                     onClick={() => setEventType(type.value)}
-                    className={`h-9 px-4 rounded-full font-body text-(--text-body-sm) font-medium border transition-all cursor-pointer ${
+                    className={`h-10 px-5 rounded-full font-body text-[14px] font-medium border transition-all cursor-pointer outline-none focus:ring-2 focus:ring-cadet-blue/50 ${
                       eventType === type.value
-                        ? "bg-composer-blue text-white border-composer-blue"
-                        : "bg-white text-graphite border-ash-gray hover:border-composer-blue"
+                        ? "bg-cadet-blue text-white border-cadet-blue"
+                        : "bg-white text-midnight-ink border-ash-gray hover:border-midnight-ink"
                     }`}
                   >
                     {type.label}
@@ -233,13 +254,19 @@ export default function NewEventFormModal({
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                 Cliente vinculado (opcional)
               </label>
               <select
                 {...register("client_id")}
-                className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
+                className="border border-ash-gray bg-white rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors cursor-pointer appearance-none"
+                style={{
+                  backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 12px center",
+                  backgroundSize: "16px",
+                }}
               >
                 <option value="">— Sin cliente —</option>
                 {clients.map((client) => (
@@ -251,16 +278,19 @@ export default function NewEventFormModal({
             </div>
           </div>
 
+          <div className="bg-white border border-ash-gray rounded-xl p-6 md:p-8 flex flex-col gap-6 w-full">
+            <h2 className="font-display font-bold text-[20px] text-midnight-ink leading-none tracking-tight">
+              Fecha y hora
+            </h2>
 
-          <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-2">
                 <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                   Fecha inicio
                 </label>
                 <input
                   type="datetime-local"
-                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                  className="border border-ash-gray rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors"
                   {...register("start_at", {
                     required: "La fecha de inicio es obligatoria",
                   })}
@@ -272,112 +302,75 @@ export default function NewEventFormModal({
                 )}
               </div>
 
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-2">
                 <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                   Fecha fin
                 </label>
                 <input
                   type="datetime-local"
-                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                  className="border border-ash-gray rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors"
                   {...register("end_at")}
                 />
               </div>
             </div>
 
+            <div className="flex items-center gap-4 mt-2">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" />
+                <div className="w-11 h-6 bg-ash-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-vivid-green"></div>
+                <span className="ml-3 font-body font-medium text-[14px] text-midnight-ink">
+                  Todo el día
+                </span>
+              </label>
+            </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 mt-2">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
                 Recordatorio
               </label>
-
-              <label
-                className={`flex items-center gap-3 h-10 px-3 rounded-md border cursor-pointer transition-all select-none ${
-                  reminderEnabled
-                    ? "border-composer-blue bg-composer-blue/5"
-                    : "border-ash-gray bg-white hover:border-composer-blue/50"
-                }`}
+              <select
+                className="border border-ash-gray bg-white rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors cursor-pointer appearance-none"
+                style={{
+                  backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 12px center",
+                  backgroundSize: "16px",
+                }}
               >
-
-                <input
-                  type="checkbox"
-                  checked={reminderEnabled}
-                  onChange={(e) => setReminderEnabled(e.target.checked)}
-                  className="sr-only"
-                />
-
-
-                <span
-                  className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                    reminderEnabled
-                      ? "bg-composer-blue border-composer-blue"
-                      : "bg-white border-ash-gray"
-                  }`}
-                >
-                  {reminderEnabled && (
-                    <svg
-                      width="10"
-                      height="8"
-                      viewBox="0 0 10 8"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1 3.5L3.8 6.5L9 1"
-                        stroke="white"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                </span>
-
-                <span className="font-body text-(--text-body-sm) text-graphite flex-1">
-                  Recordatorio 1 día antes
-                </span>
-
-
-                {reminderEnabled && startAt && (
-                  <span className="font-body text-[11px] text-composer-blue font-medium">
-                    {formatReminderDate(startAt)}
-                  </span>
-                )}
-              </label>
-
-              {reminderEnabled && !startAt && (
-                <span className="font-body text-[11px] text-steel-gray">
-                  Definí la fecha de inicio para calcular el recordatorio.
-                </span>
-              )}
+                <option value="none">Sin recordatorio</option>
+                <option value="1_day">1 día antes</option>
+                <option value="1_hour">1 hora antes</option>
+              </select>
             </div>
           </div>
 
-
-          <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
+          <div className="bg-white border border-ash-gray rounded-xl p-6 md:p-8 flex flex-col gap-6 w-full">
+            <h2 className="font-display font-bold text-[20px] text-midnight-ink leading-none tracking-tight">
+              Descripción
+            </h2>
+            <div className="flex flex-col gap-2">
               <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-                Descripción
+                Notas
               </label>
               <textarea
                 rows={4}
-                className="border border-ash-gray rounded-md px-3 py-2 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all resize-y"
+                className="border border-ash-gray rounded-md px-4 py-3 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors resize-y"
                 {...register("description")}
               />
             </div>
           </div>
 
-
-          <div className="w-full flex flex-row items-center justify-end gap-4 mt-2 border-t border-canvas-white pt-4">
+          <div className="w-full flex flex-row items-center justify-end gap-6 pt-4 pb-2">
             <button
               type="button"
               onClick={onClose}
-              className="h-10 px-4 font-body font-medium text-(--text-body-sm) text-graphite bg-transparent border-none cursor-pointer hover:underline"
+              className="font-body font-bold text-[16px] text-midnight-ink bg-transparent border-none cursor-pointer hover:underline outline-none"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="h-10 px-6 bg-composer-blue text-white border-none rounded-md font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
+              className="h-12 px-8 bg-cadet-blue text-white border-none rounded-full font-body font-bold text-[16px] cursor-pointer hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-cadet-blue/50 focus:ring-offset-2"
             >
               {IsEdit ? "Guardar cambios" : "Crear evento"}
             </button>

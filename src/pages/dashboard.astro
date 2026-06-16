@@ -89,99 +89,97 @@ const { data: clientesRecientes } = await supabase
 ---
 
 <MainLayout>
-  <div class="relative mb-6">
-    <p class="text-steel-gray text-sm mb-1">{formattedDate}</p>
-    <h1
-      class="text-6xl font-bold font-display text-midnight-ink leading-none max-w-64"
-    >
-      {greeting},{firtstName}.
+  <div class="relative pt-12 pb-16">
+    <p class="font-body text-body-sm font-medium text-steel-gray mb-6 relative z-10">
+      {formattedDate}
+    </p>
+    
+    <h1 class="font-display font-extrabold text-[64px] md:text-[88px] lg:text-[90px] text-midnight-ink leading-[0.9] tracking-tighter relative z-10 mix-blend-multiply">
+      {greeting},<br/>{firtstName}.
     </h1>
 
-    <div class="absolute top-0 right-0 w-32 h-24 pointer-events-none">
-      <div class="absolute top-0 right-8 w-13 h-13 bg-vivid-green rounded-sm">
-      </div>
-      <div class="absolute top-4 right-0 w-15 h-9 bg-bubblegum-pink rounded-sm">
-      </div>
-      <div
-        class="absolute top-10 right-6 w-10 h-10 bg-emerald-green rounded-full"
-      >
-      </div>
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-visible">
+      <div class="absolute top-12 right-[15%] w-20 h-20 bg-vivid-green mix-blend-multiply"></div>
+      <div class="absolute top-[40%] right-[2%] w-48 h-24 bg-bubblegum-pink mix-blend-multiply"></div>
     </div>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mb-6">
-    <div
-      class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
-    >
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white border border-ash-gray rounded-md p-6 relative overflow-hidden flex items-start justify-between min-h-[140px]">
       <InformationItem title="Clientes activos" number={clientesActivos} />
-      <div class="w-12 h-12 rounded-full bg-vivid-green shrink-0"></div>
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-vivid-green rounded-full"></div>
     </div>
 
-    <div
-      class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
-    >
+    <div class="bg-white border border-ash-gray rounded-md p-6 relative overflow-hidden flex items-start justify-between min-h-[140px]">
       <InformationItem title="Eventos de la semana" number={eventosSemana} />
-      <div class="w-12 h-12 rounded-full bg-cadet-blue shrink-0"></div>
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-cadet-blue rounded-full"></div>
     </div>
 
-    <div
-      class="bg-surface-card rounded-xl p-4 shadow-card flex items-start justify-between"
-    >
+    <div class="bg-white border border-ash-gray rounded-md p-6 relative overflow-hidden flex items-start justify-between min-h-[140px]">
       <InformationItem title="Cobros pendientes" number={cobrosPendientes} />
-      <div class="w-12 h-12 rounded-full bg-sunny-yellow shrink-0"></div>
+      <div class="absolute -top-4 -right-4 w-20 h-20 bg-sunny-yellow rounded-full"></div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-    <div class="bg-surface-card rounded-xl p-4 shadow-card">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-bold text-2xl font-display text-midnight-ink">
+  <div class="grid grid-cols-1 lg:grid-cols-[60%_auto] gap-6 mb-16">
+    <div class="bg-white border border-ash-gray rounded-md p-6 flex flex-col">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-ash-gray">
+        <h2 class="font-display font-bold text-subheading text-midnight-ink tracking-tight">
           Próximos eventos
         </h2>
-        <a href="/calendar" class="text-sm text-steel-gray no-underline"
-          >Ver todo ↗</a
-        >
+        <a href="/calendar" class="font-body font-medium text-body-sm text-composer-blue hover:text-midnight-ink transition-colors">
+          Ver todo ↗
+        </a>
       </div>
 
-      {
-        proximosEventos && proximosEventos.length > 0 ? (
-          proximosEventos.map((evento) => {
-            return <UpcomingEventsItem evento={evento} />;
-          })
-        ) : (
-          <div class="py-8 text-center">
-            <p class="text-steel-gray text-sm">
-              Sin eventos en las próximas 72 hs.
-            </p>
-            <a
-              href="/calendar"
-              class="text-sm text-cadet-blue no-underline mt-1 inline-block"
-            >
-              No hay eventos
-            </a>
-          </div>
-        )
-      }
+      <div class="flex flex-col gap-2">
+        {
+          proximosEventos && proximosEventos.length > 0 ? (
+            proximosEventos.map((evento) => {
+              return <UpcomingEventsItem evento={evento} />;
+            })
+          ) : (
+            <div class="py-12 flex flex-col items-center justify-center text-center bg-canvas-white border border-ash-gray rounded-md">
+              <p class="font-body text-body-sm font-medium text-steel-gray">
+                Sin eventos en las próximas 72 hs.
+              </p>
+              <a
+                href="/calendar"
+                class="font-body font-medium text-body-sm text-composer-blue hover:text-midnight-ink transition-colors mt-2"
+              >
+                No hay eventos
+              </a>
+            </div>
+          )
+        }
+      </div>
     </div>
 
-    <div class="bg-surface-card rounded-xl p-4 shadow-card">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-bold text-2xl font-display text-midnight-ink">
+    <div class="bg-white border border-ash-gray rounded-md p-6 flex flex-col">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-ash-gray">
+        <h2 class="font-display font-bold text-subheading text-midnight-ink tracking-tight">
           Clientes recientes
         </h2>
-        <a href="/clients" class="text-sm text-steel-gray no-underline"
-          >Ver todo ↗</a
-        >
+        <a href="/clients" class="font-body font-medium text-body-sm text-composer-blue hover:text-midnight-ink transition-colors">
+          Ver todo ↗
+        </a>
       </div>
 
-      {
-        clientesRecientes && clientesRecientes.length > 0 ? (
-          clientesRecientes.map((cliente, i) => {
-            return <RecentsClientsItem client={cliente} index={i} />;
-          })
-        ) : (
-          <p class="text-steel-gray text-sm">No hay clientes recientes</p>
-        )
-      }
+      <div class="flex flex-col gap-2">
+        {
+          clientesRecientes && clientesRecientes.length > 0 ? (
+            clientesRecientes.map((cliente, i) => {
+              return <RecentsClientsItem client={cliente} index={i} />;
+            })
+          ) : (
+            <div class="py-12 flex items-center justify-center text-center bg-canvas-white border border-ash-gray rounded-md">
+              <p class="font-body text-body-sm font-medium text-steel-gray">
+                No hay clientes recientes
+              </p>
+            </div>
+          )
+        }
+      </div>
     </div>
   </div>
 </MainLayout>

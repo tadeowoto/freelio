@@ -21,7 +21,7 @@ if (!user) {
 
 const { data: clients } = await supabase
   .from("clients")
-  .select("*")
+  .select("*, brand_kits(colors)")
   .eq("user_id", user.id)
   .order("name", { ascending: true });
 
@@ -29,13 +29,9 @@ if (!clients) return Astro.redirect("/");
 ---
 
 <MainLayout>
-  <div
-    class="w-full mt-10 max-w-(--page-max-width) mx-auto flex flex-col gap-(--section-gap) text-white"
-  >
+  <div class="w-full flex flex-col gap-10 mt-10">
     <div class="w-full flex flex-row items-center justify-between">
-      <h1
-        class="font-sans text-4xl font-bold tracking-heading-lg text-midnight-ink"
-      >
+      <h1 class="font-display font-bold text-[56px] md:text-[80px] tracking-tighter text-midnight-ink leading-none">
         Clientes
       </h1>
       <NewClientButton client:load />

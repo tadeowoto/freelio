@@ -61,263 +61,197 @@ export default function NewClientFormModal({
 
   return (
     <div
-      className="fixed  inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px] p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px] p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white w-full max-w-[720px] max-h-[90vh] rounded-xl shadow-(--shadow-dark) overflow-y-auto relative flex flex-col">
-        <div className="absolute top-0 left-0 w-full h-12 pointer-events-none overflow-hidden select-none">
-          <div className="absolute top-0 left-0 w-12 h-12 bg-vivid-green"></div>
-          <div className="absolute top-0 left-20 w-16 h-4 bg-bubblegum-pink"></div>
-          <div className="absolute top-0 right-24 w-12 h-4 bg-vivid-green opacity-90 grid grid-cols-4 gap-1 p-1">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-white/30 w-1 h-1 rounded-full"></div>
-            ))}
-          </div>
-          <div className="absolute top-0 right-8 w-16 h-6 bg-sunny-yellow"></div>
-          <div className="absolute top-6 right-0 w-8 h-8 bg-composer-blue"></div>
+      <div className="bg-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col">
+        {/* Decorative Top Header */}
+        <div className="absolute top-0 left-0 w-full h-24 pointer-events-none overflow-hidden select-none z-0">
+          <div className="absolute top-0 left-0 w-24 h-24 bg-vivid-green"></div>
+          <div className="absolute top-0 left-24 w-16 h-8 bg-bubblegum-pink"></div>
+          <div className="absolute top-0 right-32 w-16 h-8 bg-vivid-green opacity-90"></div>
+          <div className="absolute top-0 right-16 w-16 h-12 bg-sunny-yellow"></div>
+          <div className="absolute top-8 right-0 w-16 h-16 bg-composer-blue"></div>
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-10 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-canvas-white border border-ash-gray text-graphite font-body font-medium text-lg cursor-pointer hover:bg-ash-gray/50 transition-colors z-10"
+          className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-canvas-white border border-ash-gray text-midnight-ink font-bold text-lg cursor-pointer hover:bg-ash-gray/50 transition-colors z-10"
         >
           &times;
         </button>
 
         <form
           onSubmit={onSubmit}
-          className="p-8 pt-16 flex flex-col gap-6 text-graphite"
+          className="p-8 pt-20 flex flex-col gap-6 text-midnight-ink"
         >
-          <h1 className="font-sans text-4xl font-bold text-(--text-heading) tracking-heading text-midnight-ink mb-2">
+          <h1 className="font-sans text-5xl font-bold tracking-tighter text-midnight-ink mb-2">
             Nuevo cliente
           </h1>
 
-          <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <h2 className="font-sans font-bold text-base text-midnight-ink">
+          {/* Información básica */}
+          <div className="bg-white border border-ash-gray rounded-xl p-6 flex flex-col gap-4">
+            <h2 className="font-sans font-bold text-sm text-midnight-ink">
               Información básica
             </h2>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+                <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                   Nombre completo
                 </label>
                 <input
                   type="text"
                   placeholder="María García"
-                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                  className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue transition-all"
                   {...register("name", {
                     required: "El nombre es obligatorio",
                   })}
                 />
-                {errors.name && (
-                  <span className="font-body text-[11px] text-action-red">
-                    {errors.name.message as string}
-                  </span>
-                )}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+                <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                   Empresa
                 </label>
                 <input
                   placeholder="Mundo Padel..."
                   type="text"
-                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
+                  className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue transition-all"
                   {...register("company", {
                     required: "La empresa es obligatoria",
                   })}
                 />
-                {errors.company && (
-                  <span className="font-body text-[11px] text-action-red">
-                    {errors.company.message as string}
-                  </span>
-                )}
               </div>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-                  Rol del contacto
-                </label>
-                <input
-                  type="text"
-                  placeholder="CEO, Marketing Manager"
-                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("contact", {
-                    required: "El rol del contacto es obligatorio",
-                  })}
-                />
-                {errors.contact && (
-                  <span className="font-body text-[11px] text-action-red">
-                    {errors.contact.message as string}
-                  </span>
-                )}
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
+                Rol del contacto
+              </label>
+              <input
+                type="text"
+                placeholder="CEO, Marketing Manager"
+                className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue transition-all"
+                {...register("contact", { required: "El rol es obligatorio" })}
+              />
             </div>
           </div>
 
-          <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <h2 className="font-sans font-bold text-base text-midnight-ink">
+          {/* Contacto */}
+          <div className="bg-white border border-ash-gray rounded-xl p-6 flex flex-col gap-4">
+            <h2 className="font-sans font-bold text-sm text-midnight-ink">
               Contacto
             </h2>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+                <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                   Email
                 </label>
                 <input
                   type="email"
-                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("email", {
-                    required: "El email es obligatorio",
-                  })}
+                  className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue"
+                  {...register("email")}
                 />
-                {errors.email && (
-                  <span className="font-body text-[11px] text-action-red">
-                    {errors.email.message as string}
-                  </span>
-                )}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+                <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                   Teléfono
                 </label>
                 <input
                   type="tel"
-                  className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                  {...register("phone", {
-                    required: "El teléfono es obligatorio",
-                  })}
+                  className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue"
+                  {...register("phone")}
                 />
-                {errors.phone && (
-                  <span className="font-body text-[11px] text-action-red">
-                    {errors.phone.message as string}
-                  </span>
-                )}
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-ash-gray rounded-xl p-6 shadow-(--shadow-card) flex flex-col gap-4">
-            <h2 className="font-sans font-bold text-base text-midnight-ink">
+          {/* Comercial */}
+          <div className="bg-white border border-ash-gray rounded-xl p-6 flex flex-col gap-4">
+            <h2 className="font-sans font-bold text-sm text-midnight-ink">
               Comercial
             </h2>
-
             <div className="flex flex-col gap-1.5">
-              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+              <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                 Tarifa
               </label>
               <input
                 type="number"
                 placeholder="45"
-                className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                {...register("fee", { required: "La tarifa es obligatoria" })}
+                className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue"
+                {...register("fee")}
               />
-              {errors.fee && (
-                <span className="font-body text-[11px] text-action-red">
-                  {errors.fee.message as string}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-                Primer contacto
-              </label>
-              <input
-                type="date"
-                className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                {...register("first_contact_at", {
-                  required: "La fecha es obligatoria",
-                })}
-              />
-              {errors.first_contact_at && (
-                <span className="font-body text-[11px] text-action-red">
-                  {errors.first_contact_at.message as string}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-                Ultimo contacto
-              </label>
-              <input
-                type="date"
-                placeholder=" 45"
-                className="border border-ash-gray rounded-md h-10 px-3 font-body text-(--text-body-sm) outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) transition-all"
-                {...register("last_contact_at")}
-              />
-              {errors.last_contact_at && (
-                <span className="font-body text-[11px] text-action-red">
-                  {errors.last_contact_at.message as string}
-                </span>
-              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+              <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                 Modalidad
               </label>
-              <select
-                {...register("payment_method")}
-                value={modalidad}
-                onChange={(e) => setModalidad(e.target.value)}
-                className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
-              >
-                <option value="">Ingrese una modalidad</option>
-                <option value="por_hora">Por hora</option>
-                <option value="por_proyecto">Por proyecto</option>
-                <option value="mensual">Mensual</option>
-              </select>
+              <div className="flex gap-2">
+                {["por_hora", "por_proyecto", "mensual"].map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setModalidad(m)}
+                    className={`px-4 py-2 rounded-full text-xs font-bold ${modalidad === m ? "bg-midnight-ink text-white" : "bg-canvas-white border border-ash-gray"}`}
+                  >
+                    {m === "por_hora"
+                      ? "Por hora"
+                      : m === "por_proyecto"
+                        ? "Por proyecto"
+                        : "Mensual"}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+              <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                 Estado de cobro
               </label>
-              <select
-                {...register("payment_status")}
-                value={estadoCobro}
-                onChange={(e) => setEstadoCobro(e.target.value)}
-                className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
-              >
-                <option value="">Ingrese un estado</option>
-                <option value="cobrado">Cobrado</option>
-                <option value="pendiente">Pendiente</option>
-              </select>
+              <div className="flex gap-2">
+                {["cobrado", "pendiente"].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setEstadoCobro(s)}
+                    className={`px-4 py-2 rounded-full text-xs font-bold ${estadoCobro === s ? (s === "cobrado" ? "bg-vivid-green text-white" : "bg-sunset-orange text-white") : "bg-canvas-white border border-ash-gray"}`}
+                  >
+                    {s === "cobrado" ? "Cobrado" : "Pendiente"}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+              <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
                 Estado del cliente
               </label>
-              <select
-                {...register("status")}
-                value={estadoCliente}
-                onChange={(e) => setEstadoCliente(e.target.value)}
-                className="border border-ash-gray bg-white rounded-md h-10 px-3 font-body text-(--text-body-sm) text-graphite outline-none focus:border-composer-blue focus:shadow-(--shadow-subtle) cursor-pointer transition-all"
-              >
-                <option value="">Ingrese un estado</option>
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
-              </select>
+              <div className="flex gap-2">
+                {["activo", "inactivo"].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setEstadoCliente(s)}
+                    className={`px-4 py-2 rounded-full text-xs font-bold ${estadoCliente === s ? (s === "activo" ? "bg-vivid-green text-white" : "bg-ash-gray text-midnight-ink") : "bg-canvas-white border border-ash-gray"}`}
+                  >
+                    {s === "activo" ? "Activo" : "Inactivo"}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="w-full flex flex-row items-center justify-end gap-4 mt-2 border-t border-canvas-white pt-4">
+          <div className="w-full flex justify-end gap-4 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="h-10 px-4 font-body font-medium text-(--text-body-sm) text-graphite bg-transparent border-none cursor-pointer hover:underline"
+              className="px-6 font-bold text-midnight-ink"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="h-10 px-6 bg-composer-blue text-white border-none rounded-md font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
+              className="px-6 py-3 bg-composer-blue text-white rounded-full font-bold"
             >
               Guardar cliente
             </button>

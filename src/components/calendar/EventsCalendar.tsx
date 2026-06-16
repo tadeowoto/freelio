@@ -83,63 +83,63 @@ export default function EventsCalendar({
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-6">
-      <div className="w-full flex flex-col gap-4 md:flex-row md:items-center md:justify-between flex-shrink-0 mt-2">
-        <h1 className="text-6xl font-bold font-display text-midnight-ink leading-none max-w-64">
+    <div className="w-full h-full flex flex-col gap-8">
+      <div className="w-full flex flex-col gap-6 md:flex-row md:items-end md:justify-between flex-shrink-0 pt-6">
+        <h1 className="font-display font-extrabold text-[56px] md:text-[80px] text-midnight-ink leading-[0.9] tracking-tighter">
           {currentTitle}
         </h1>
 
-        <div className="flex flex-row flex-wrap items-center gap-3 sm:gap-4">
+        <div className="flex flex-row flex-wrap items-center gap-4 sm:gap-6 pb-2">
           <div className="flex flex-row items-center gap-2">
             <button
               onClick={handlePrev}
-              className="w-10 h-10 flex items-center justify-center bg-white border border-ash-gray rounded-full text-midnight-ink cursor-pointer hover:bg-canvas-white transition-colors select-none font-medium"
+              className="w-10 h-10 flex items-center justify-center bg-white border border-ash-gray rounded-full text-midnight-ink font-body font-medium hover:bg-canvas-white transition-colors select-none outline-none focus:ring-2 focus:ring-composer-blue/50"
             >
               &lt;
             </button>
             <button
               onClick={handleToday}
-              className="px-4 h-10 flex items-center justify-center bg-white border border-ash-gray rounded-full text-midnight-ink font-body font-medium text-(--text-body-sm) cursor-pointer hover:bg-canvas-white transition-colors select-none"
+              className="px-6 h-10 flex items-center justify-center bg-white border border-ash-gray rounded-full text-midnight-ink font-body font-medium text-body-sm hover:bg-canvas-white transition-colors select-none outline-none focus:ring-2 focus:ring-composer-blue/50"
             >
               Hoy
             </button>
             <button
               onClick={handleNext}
-              className="w-10 h-10 flex items-center justify-center bg-white border border-ash-gray rounded-full text-midnight-ink cursor-pointer hover:bg-canvas-white transition-colors select-none font-medium"
+              className="w-10 h-10 flex items-center justify-center bg-white border border-ash-gray rounded-full text-midnight-ink font-body font-medium hover:bg-canvas-white transition-colors select-none outline-none focus:ring-2 focus:ring-composer-blue/50"
             >
               &gt;
             </button>
           </div>
 
-          <NewEventButton />
+          <NewEventButton clients={clients} />
         </div>
       </div>
 
-      <div className="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 font-body text-(--text-body-sm) text-graphite font-medium flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-composer-blue" />
+      <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-3 font-body text-body-sm text-midnight-ink font-medium flex-shrink-0">
+        <div className="flex items-center gap-2.5">
+          <span className="w-3.5 h-3.5 rounded-full bg-cadet-blue" />
           <span>Reunión</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-sunset-orange" />
+        <div className="flex items-center gap-2.5">
+          <span className="w-3.5 h-3.5 rounded-full bg-sunset-orange" />
           <span>Deadline</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-vivid-green" />
+        <div className="flex items-center gap-2.5">
+          <span className="w-3.5 h-3.5 rounded-full bg-vivid-green" />
           <span>Entrega</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-sunny-yellow" />
+        <div className="flex items-center gap-2.5">
+          <span className="w-3.5 h-3.5 rounded-full bg-sunny-yellow" />
           <span>Pago</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-bubblegum-pink" />
+        <div className="flex items-center gap-2.5">
+          <span className="w-3.5 h-3.5 rounded-full bg-bubblegum-pink" />
           <span>Seguimiento</span>
         </div>
       </div>
 
-      <div className="w-full flex-1 min-h-0 overflow-x-auto bg-white border border-ash-gray rounded-xl shadow-(--shadow-card) p-3 md:p-5">
-        <div className="w-full h-full min-w-[640px] md:min-w-0 freelio-calendar-custom-grid">
+      <div className="w-full flex-1 min-h-0 overflow-x-auto bg-white border border-ash-gray rounded-md overflow-hidden">
+        <div className="w-full h-full min-w-[768px] md:min-w-0 freelio-calendar-custom-grid">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, interactionPlugin]}
@@ -149,13 +149,13 @@ export default function EventsCalendar({
             locale="es"
             events={events}
             dateClick={handleDateClick}
-            eventClick={handleEventClick} // Capturador nativo de clics en celdas ocupadas
+            eventClick={handleEventClick}
             selectable={true}
             eventContent={(eventInfo) => {
               const type = eventInfo.event.extendedProps.type || "otro";
               return (
                 <div
-                  className={`freelio-custom-event event-pill-${type} cursor-pointer`}
+                  className={`freelio-custom-event event-pill-${type} cursor-pointer hover:opacity-90 transition-opacity`}
                 >
                   <span className="truncate">{eventInfo.event.title}</span>
                 </div>
@@ -164,12 +164,12 @@ export default function EventsCalendar({
             dayCellContent={(dayInfo) => {
               const isToday = dayInfo.isToday;
               return (
-                <div className="w-full h-full flex flex-row items-start justify-start p-1 md:p-2">
+                <div className="w-full h-full flex flex-row items-start justify-start p-1.5 md:p-3">
                   <span
-                    className={`font-body text-(--text-body-sm) flex items-center justify-center ${
+                    className={`font-body text-body-sm flex items-center justify-center ${
                       isToday
-                        ? "w-6 h-6 bg-composer-blue text-white font-bold rounded-full"
-                        : "text-graphite"
+                        ? "w-7 h-7 bg-cadet-blue text-white font-bold rounded-full"
+                        : "text-midnight-ink font-medium"
                     }`}
                   >
                     {dayInfo.dayNumberText.replace("°", "")}

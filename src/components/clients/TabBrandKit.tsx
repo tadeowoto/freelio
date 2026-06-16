@@ -9,8 +9,8 @@ type TabBrandKitProps = {
 export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
   if (!brandKit) {
     return (
-      <>
-        <div className="text-center py-16 text-steel-gray font-body">
+      <div className="flex flex-col items-center justify-center py-20 gap-6">
+        <div className="text-center font-body text-body-sm text-steel-gray">
           Este cliente no tiene brand kit todavía.
         </div>
         <NewBrandKitButton
@@ -18,36 +18,36 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
           isEdit={false}
           text={"Crear BrandKit"}
         />
-      </>
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex justify-end">
+    <div className="flex flex-col gap-6 w-full">
+      <div className="flex justify-end w-full">
         <NewBrandKitButton
           clientId={clientId}
           brandKit={brandKit}
           isEdit={true}
-          text={"Editar el BrandKit"}
+          text={"Editar brand kit"}
         />
       </div>
 
-      <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card)">
-        <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-6">
+      <div className="bg-white border border-ash-gray rounded-md p-6 md:p-8 flex flex-col w-full">
+        <h2 className="font-display font-bold text-[24px] text-midnight-ink leading-none tracking-tight mb-8">
           Paleta de colores
         </h2>
-        <div className="flex flex-row gap-6 flex-wrap">
+        <div className="flex flex-row gap-8 flex-wrap">
           {brandKit.colors.map((color) => (
             <div key={color.hex} className="flex flex-col items-center gap-2">
               <div
-                className="w-16 h-16 rounded-full border-2 border-white shadow-(--shadow-subtle)"
+                className="w-16 h-16 rounded-full"
                 style={{ background: color.hex }}
               />
-              <span className="font-body font-medium text-(--text-body-sm) text-midnight-ink">
+              <span className="font-body font-bold text-[12px] text-midnight-ink mt-2 leading-none">
                 {color.name}
               </span>
-              <span className="font-body text-[11px] text-steel-gray">
+              <span className="font-body text-[11px] text-steel-gray leading-none uppercase">
                 {color.hex}
               </span>
             </div>
@@ -55,46 +55,48 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
         </div>
       </div>
 
-      <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card)">
-        <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-6">
+      <div className="bg-white border border-ash-gray rounded-md p-6 md:p-8 flex flex-col w-full">
+        <h2 className="font-display font-bold text-[24px] text-midnight-ink leading-none tracking-tight mb-8">
           Tipografías
         </h2>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {brandKit.fonts.map((font) => (
             <div
               key={font.name}
-              className="flex items-center gap-4 p-4 border border-ash-gray rounded-xl"
+              className="flex items-center gap-6 p-4 border border-ash-gray rounded-md"
             >
-              <span className="font-serif text-3xl text-midnight-ink w-12">
+              <span className="font-serif text-[32px] text-midnight-ink leading-none w-12 text-center">
                 Aa
               </span>
-              <span className="font-body font-medium text-(--text-body) text-midnight-ink flex-1">
-                {font.name}
-              </span>
-              <span className="px-2 py-0.5 bg-midnight-ink text-white text-[10px] font-bold rounded-full uppercase tracking-wider">
-                {font.role}
-              </span>
+              <div className="flex flex-col gap-1.5 flex-1 justify-center">
+                <span className="font-body font-bold text-[16px] text-midnight-ink leading-none">
+                  {font.name}
+                </span>
+                <span className="px-2 py-1 bg-midnight-ink text-white text-[10px] font-bold rounded-full uppercase tracking-wider self-start leading-none">
+                  {font.role}
+                </span>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
       {brandKit.assets_links.length > 0 && (
-        <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card)">
-          <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-6">
+        <div className="bg-white border border-ash-gray rounded-md p-6 md:p-8 flex flex-col w-full">
+          <h2 className="font-display font-bold text-[24px] text-midnight-ink leading-none tracking-tight mb-8">
             Links de assets
           </h2>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             {brandKit.assets_links.map((link) => (
               <div
                 key={link.url}
-                className="flex items-center justify-between p-4 border border-ash-gray rounded-xl hover:border-composer-blue transition-colors group"
+                className="flex items-center justify-between p-4 border border-ash-gray rounded-md hover:bg-canvas-white transition-colors group cursor-pointer"
               >
-                <span className="font-body font-medium text-(--text-body) text-midnight-ink">
+                <span className="font-body font-medium text-[14px] text-midnight-ink leading-none">
                   {link.label}
                 </span>
-                <span className="text-steel-gray group-hover:text-composer-blue transition-colors">
-                  Ver link
+                <span className="text-steel-gray text-[14px] leading-none opacity-0 group-hover:opacity-100 transition-opacity">
+                  ↗
                 </span>
               </div>
             ))}
@@ -102,17 +104,16 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
         </div>
       )}
 
-      <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card)">
-        <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-6">
-          Notas
-        </h2>
-        <div className="flex flex-col gap-2">
-          {" "}
-          <span className="text-steel-gray group-hover:text-composer-blue transition-colors">
+      {brandKit.notes && (
+        <div className="bg-white border border-ash-gray rounded-md p-6 md:p-8 flex flex-col w-full">
+          <h2 className="font-display font-bold text-[24px] text-midnight-ink leading-none tracking-tight mb-6">
+            Notas de estilo
+          </h2>
+          <div className="font-body text-[14px] font-medium text-iron leading-relaxed">
             {brandKit.notes}
-          </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

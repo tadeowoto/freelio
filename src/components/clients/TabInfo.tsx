@@ -21,17 +21,19 @@ export default function TabInfo({ client }: { client: Client }) {
         ? "/h"
         : client.rate_type === "mensual"
           ? "/mes"
-          : "";
+          : client.rate_type === "por_proyecto"
+            ? "/proy"
+            : "";
     return `$${client.rate}${suffix}`;
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-      <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card) lg:col-span-2">
-        <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start w-full">
+      <div className="bg-white border border-ash-gray rounded-md p-6 md:p-8 lg:col-span-2 flex flex-col">
+        <h2 className="font-display font-bold text-[24px] text-midnight-ink leading-none tracking-tight mb-8">
           Información
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-6">
           {[
             { label: "Empresa", value: client.company },
             { label: "Industria / Disciplina", value: client.industry },
@@ -50,11 +52,11 @@ export default function TabInfo({ client }: { client: Client }) {
                 : "—",
             },
           ].map(({ label, value }) => (
-            <div key={label}>
-              <span className="block font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
+            <div key={label} className="flex flex-col">
+              <span className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider mb-2 leading-none">
                 {label}
               </span>
-              <span className="block font-sans font-medium text-graphite text-(--text-body) mt-1">
+              <span className="font-body font-medium text-[14px] text-midnight-ink leading-none">
                 {value || "—"}
               </span>
             </div>
@@ -62,12 +64,12 @@ export default function TabInfo({ client }: { client: Client }) {
         </div>
       </div>
 
-      <div className="bg-white border border-ash-gray rounded-xl p-8 shadow-(--shadow-card) relative overflow-hidden">
-        <div className="absolute top-4 right-0 w-3 h-16 bg-hot-pink/90 rounded-l-sm" />
-        <h2 className="font-sans font-bold text-(--text-subheading) tracking-subheading text-midnight-ink mb-4">
+      <div className="bg-white border border-ash-gray rounded-md p-6 md:p-8 relative overflow-hidden flex flex-col min-h-[200px]">
+        <div className="absolute top-8 right-0 w-3 h-16 bg-sunset-orange mix-blend-multiply" />
+        <h2 className="font-display font-bold text-[24px] text-midnight-ink leading-none tracking-tight mb-6">
           Notas
         </h2>
-        <p className="font-body text-(--text-body) text-graphite">
+        <p className="font-body text-[14px] font-medium text-iron leading-relaxed">
           {client.notes || "Sin notas."}
         </p>
       </div>
