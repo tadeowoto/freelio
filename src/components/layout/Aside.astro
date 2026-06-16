@@ -6,6 +6,14 @@ const { profile } = Astro.props;
 if (!profile) {
   return null;
 }
+
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { href: "/dashboard", label: "Dashboard", Icon: LayoutDashboard },
+  { href: "/calendar", label: "Calendario", Icon: CalendarDays },
+  { href: "/clients", label: "Clientes", Icon: Users },
+];
 ---
 
 <aside
@@ -15,29 +23,25 @@ if (!profile) {
     <h1 class="text-white font-bold text-2xl font-display">Freelio</h1>
 
     <nav class="flex flex-col gap-4 w-full">
-      <a
-        href="/dashboard"
-        class="flex items-center gap-4 px-4 py-3 rounded-full bg-white/15 text-white font-medium text-sm transition-colors hover:bg-white/25"
-      >
-        <LayoutDashboard color="#bec6cc" size={16} />
-        <span>Dashboard</span>
-      </a>
-
-      <a
-        href="/calendar"
-        class="flex items-center gap-4 px-4 py-3 rounded-full text-white/60 font-medium text-sm transition-colors hover:bg-white/10 hover:text-white"
-      >
-        <CalendarDays color="#bec6cc" size={16} />
-        <span>Calendario</span>
-      </a>
-
-      <a
-        href="/clients"
-        class="flex items-center gap-4 px-4 py-3 rounded-full text-white/60 font-medium text-sm transition-colors hover:bg-white/10 hover:text-white"
-      >
-        <Users color="#bec6cc" size={16} />
-        <span>Clientes</span>
-      </a>
+      {
+        navItems.map(({ href, label, Icon }) => {
+          const isActive = currentPath.startsWith(href);
+          return (
+            <a
+              href={href}
+              class:list={[
+                "flex items-center gap-4 px-4 py-3 rounded-full font-medium text-sm transition-colors",
+                isActive
+                  ? "bg-white text-midnight-ink"
+                  : "text-white/60 hover:bg-white/10 hover:text-white",
+              ]}
+            >
+              <Icon color={isActive ? "#0d0d0d" : "#bec6cc"} size={16} />
+              <span>{label}</span>
+            </a>
+          );
+        })
+      }
     </nav>
   </div>
 
