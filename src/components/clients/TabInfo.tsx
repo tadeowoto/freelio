@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 interface Client {
   id: string;
   name: string;
@@ -15,7 +16,6 @@ interface Client {
 }
 
 export default function TabInfo({ client }: { client: Client }) {
-
   const [status, setStatus] = useState(client.status);
   const [loading, setLoading] = useState(false);
 
@@ -41,8 +41,12 @@ export default function TabInfo({ client }: { client: Client }) {
       if (!response.ok)
         throw new Error("Error al actualizar el estado del cliente");
 
+      toast.success(
+        `Cliente ${isActive ? "dado de baja" : "dado de alta"} exitosamente`,
+      );
       setStatus(newStatus);
     } catch (err) {
+      toast.error("Error al actualizar el estado del cliente");
       console.error(err);
     } finally {
       setLoading(false);
@@ -67,7 +71,7 @@ export default function TabInfo({ client }: { client: Client }) {
         <h2 className="font-display font-bold text-[24px] text-midnight-ink leading-none tracking-tight mb-8">
           Información
         </h2>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-6">
           {[
             { label: "Empresa", value: client.company },
@@ -107,7 +111,6 @@ export default function TabInfo({ client }: { client: Client }) {
         <p className="font-body text-[14px] font-medium text-iron leading-relaxed">
           {client.notes || "Sin notas."}
         </p>
-        
       </div>
 
       <div className="bg-white border border-ash-gray rounded-md p-6 md:p-8 lg:col-span-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 max-w-md">
@@ -127,20 +130,19 @@ export default function TabInfo({ client }: { client: Client }) {
           </div>
         </div>
 
-      <button
-        type="button"
-        onClick={handleToggleStatus}
-        disabled={loading}
-        className="px-5 py-2.5 rounded-full text-xs font-bold bg-canvas-white border border-sunset-orange text-sunset-orange hover:bg-sunset-orange hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {loading
-          ? "Procesando..."
-          : status === "activo"
-            ? "Dar de baja"
-            : "Dar de alta"}
-      </button>
-    </div>
-      
+        <button
+          type="button"
+          onClick={handleToggleStatus}
+          disabled={loading}
+          className="px-5 py-2.5 rounded-full text-xs font-bold bg-canvas-white border border-sunset-orange text-sunset-orange hover:bg-sunset-orange hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading
+            ? "Procesando..."
+            : status === "activo"
+              ? "Dar de baja"
+              : "Dar de alta"}
+        </button>
+      </div>
     </div>
   );
 }

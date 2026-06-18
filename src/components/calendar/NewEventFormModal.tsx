@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { EventFormValues, Client } from "../../types/types";
+import { toast } from "sonner";
 
 type NewEventFormModalProps = {
   isOpenModal: boolean;
@@ -147,9 +148,12 @@ export default function NewEventFormModal({
         throw new Error(errorData.error || "Error al guardar");
       }
 
+      toast.success("Evento guardado correctamente");
+
       onClose();
       window.location.reload();
     } catch (err) {
+      toast.error("Error al guardar el evento");
       console.error(err);
     }
   });

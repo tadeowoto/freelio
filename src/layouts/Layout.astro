@@ -1,3 +1,8 @@
+---
+import ToastProvider from "../components/ToastProvider";
+---
+
+
 <!doctype html>
 <html lang="es">
   <head>
@@ -13,6 +18,7 @@
     />
   </head>
   <body>
+    <ToastProvider client:only="react" />
     <slot />
   </body>
 </html>

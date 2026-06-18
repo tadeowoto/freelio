@@ -5,6 +5,7 @@ import BrandKitModalHeader from "./BrandKitModalHeader";
 import ColorSection from "./ColorSection";
 import FontSection from "./FontSection";
 import AssetSection from "./AssetSection";
+import { toast } from "sonner";
 
 type NewBrandkitFormModalProps = {
   isOpenModal: boolean;
@@ -117,12 +118,11 @@ export default function NewBrandKitFormModal({
   };
 
   const onSubmit = handleSubmit(async (data) => {
-
     const isAllEmpty =
-    data.colors.length === 0 &&
-    data.fonts.length === 0 &&
-    data.assets_links.length === 0 &&
-    !data.notes?.trim();
+      data.colors.length === 0 &&
+      data.fonts.length === 0 &&
+      data.assets_links.length === 0 &&
+      !data.notes?.trim();
 
     if (isAllEmpty) {
       setError("root", {
@@ -154,9 +154,11 @@ export default function NewBrandKitFormModal({
 
         if (!response.ok) throw new Error("Error al editar el brand kit");
 
+        toast.success("Brand kit editado exitosamente");
         onClose();
         window.location.reload();
       } catch (err) {
+        toast.error("Error al editar el brand kit");
         console.error(err);
       }
     } else {
@@ -169,14 +171,14 @@ export default function NewBrandKitFormModal({
 
         if (!response.ok) throw new Error("Error al guardar el brand kit");
 
+        toast.success("Brand kit guardado exitosamente");
         onClose();
         window.location.reload();
       } catch (err) {
+        toast.error("Error al guardar el brand kit");
         console.error(err);
       }
     }
-
-
   });
 
   return (
