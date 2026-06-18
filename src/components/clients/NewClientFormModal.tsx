@@ -65,7 +65,7 @@ export default function NewClientFormModal({
       onClick={handleBackdropClick}
     >
       <div className="bg-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col">
-        {/* Decorative Top Header */}
+       
         <div className="absolute top-0 left-0 w-full h-24 pointer-events-none overflow-hidden select-none z-0">
           <div className="absolute top-0 left-0 w-24 h-24 bg-vivid-green"></div>
           <div className="absolute top-0 left-24 w-16 h-8 bg-bubblegum-pink"></div>
@@ -90,7 +90,7 @@ export default function NewClientFormModal({
             Nuevo cliente
           </h1>
 
-          {/* Información básica */}
+        
           <div className="bg-white border border-ash-gray rounded-xl p-6 flex flex-col gap-4">
             <h2 className="font-sans font-bold text-sm text-midnight-ink">
               Información básica
@@ -136,7 +136,7 @@ export default function NewClientFormModal({
             </div>
           </div>
 
-          {/* Contacto */}
+      
           <div className="bg-white border border-ash-gray rounded-xl p-6 flex flex-col gap-4">
             <h2 className="font-sans font-bold text-sm text-midnight-ink">
               Contacto
@@ -165,7 +165,7 @@ export default function NewClientFormModal({
             </div>
           </div>
 
-          {/* Comercial */}
+        
           <div className="bg-white border border-ash-gray rounded-xl p-6 flex flex-col gap-4">
             <h2 className="font-sans font-bold text-sm text-midnight-ink">
               Comercial

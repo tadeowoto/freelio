@@ -41,6 +41,8 @@ export default function NewBrandKitFormModal({
     handleSubmit,
     control,
     reset,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
@@ -115,6 +117,24 @@ export default function NewBrandKitFormModal({
   };
 
   const onSubmit = handleSubmit(async (data) => {
+
+    const isAllEmpty =
+    data.colors.length === 0 &&
+    data.fonts.length === 0 &&
+    data.assets_links.length === 0 &&
+    !data.notes?.trim();
+
+    if (isAllEmpty) {
+      setError("root", {
+        type: "manual",
+        message:
+          "Agregá al menos un color, una fuente, un asset o una nota antes de guardar.",
+      });
+      return;
+    }
+
+    clearErrors("root");
+
     const formData = {
       id: brandKit?.id,
       client_id: clientId,
@@ -155,6 +175,8 @@ export default function NewBrandKitFormModal({
         console.error(err);
       }
     }
+
+
   });
 
   return (
@@ -226,7 +248,11 @@ export default function NewBrandKitFormModal({
               />
             </div>
           </div>
-
+          {errors.root && (
+            <p className="font-body text-[13px] font-bold text-sunset-orange -mt-2">
+              {errors.root.message}
+            </p>
+          )}
           <div className="w-full flex flex-row items-center justify-end gap-6 pt-2 pb-2">
             <button
               type="button"
