@@ -1,20 +1,9 @@
-export interface ClientCardInterface {
-  id: string;
-  name: string;
-  company: string;
-  status: string;
-  fee: number | null;
-  payment_method: "por_hora" | "por_proyecto" | "mensual" | null;
-  last_contact_at: string;
-  brand_kits?: Array<{
-    colors: Array<{ name: string; hex: string }> | string[];
-  }>;
-}
+import type { ClientWithBrandKit } from "../../types/types";
 
 export default function ClientsCard({
   client,
 }: {
-  client: ClientCardInterface;
+  client: ClientWithBrandKit;
 }) {
   const clientColors = client.brand_kits?.[0]?.colors || [];
   const fechaContacto = client.last_contact_at
@@ -45,7 +34,7 @@ export default function ClientsCard({
           </span>
         </div>
 
-        <div className="flex flex-row items-center mt-6 mb-8 min-h-[32px]">
+        <div className="flex flex-row items-center mt-6 mb-8 min-h-8">
           {clientColors.length > 0 ? (
             clientColors.map((color, index) => {
               const hexColor = typeof color === "string" ? color : color.hex;

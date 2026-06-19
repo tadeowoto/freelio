@@ -2,6 +2,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+type ClientFormData = {
+  name: string;
+  company: string;
+  contact: string;
+  email: string;
+  phone: string;
+  fee: number;
+};
+
 type NewClientFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
@@ -22,24 +31,22 @@ export default function NewClientFormModal({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<ClientFormData>();
   const [modalidad, setModalidad] = useState("por_hora");
   const [estadoCobro, setEstadoCobro] = useState("pendiente");
   const [estadoCliente, setEstadoCliente] = useState("activo");
 
-  const onSubmit = handleSubmit(async (data, e) => {
+  const onSubmit = handleSubmit(async (data) => {
     const formData = {
       name: data.name,
       company: data.company,
-      status: data.status,
-      payment_status: data.payment_status,
       contact: data.contact,
       email: data.email,
       phone: data.phone,
-      payment_method: data.paymenth_method,
-      first_contact_at: data.first_contact_at,
-      last_contact_at: data.last_contact_at,
       fee: data.fee,
+      status: estadoCliente,
+      payment_status: estadoCobro,
+      payment_method: modalidad,
     };
 
     try {
@@ -67,7 +74,7 @@ export default function NewClientFormModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px] p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col">
+      <div className="bg-white w-full max-w-160 max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col">
         <div className="absolute top-0 left-0 w-full h-24 pointer-events-none overflow-hidden select-none z-0">
           <div className="absolute top-0 left-0 w-24 h-24 bg-vivid-green"></div>
           <div className="absolute top-0 left-24 w-16 h-8 bg-bubblegum-pink"></div>
@@ -122,6 +129,9 @@ export default function NewClientFormModal({
                     required: "La empresa es obligatoria",
                   })}
                 />
+                <span className="font-body text-[11px] text-action-red mt-1">
+                  {errors.company?.message as string}
+                </span>
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
@@ -134,6 +144,9 @@ export default function NewClientFormModal({
                 className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue transition-all"
                 {...register("contact", { required: "El rol es obligatorio" })}
               />
+              <span className="font-body text-[11px] text-action-red mt-1">
+                {errors.contact?.message as string}
+              </span>
             </div>
           </div>
 
@@ -149,8 +162,13 @@ export default function NewClientFormModal({
                 <input
                   type="email"
                   className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue"
-                  {...register("email")}
+                  {...register("email", {
+                    required: "El email es obligatorio",
+                  })}
                 />
+                <span className="font-body text-[11px] text-action-red mt-1">
+                  {errors.email?.message as string}
+                </span>
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="font-body text-[10px] font-bold text-steel-gray uppercase tracking-wider">
@@ -159,8 +177,13 @@ export default function NewClientFormModal({
                 <input
                   type="tel"
                   className="border border-ash-gray rounded-lg h-11 px-3 font-body text-sm outline-none focus:border-composer-blue"
-                  {...register("phone")}
+                  {...register("phone", {
+                    required: "El teléfono es obligatorio",
+                  })}
                 />
+                <span className="font-body text-[11px] text-action-red mt-1">
+                  {errors.phone?.message as string}
+                </span>
               </div>
             </div>
           </div>

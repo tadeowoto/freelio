@@ -59,17 +59,17 @@ const { data: events } = await supabase
         href="/clients"
         class="inline-flex items-center gap-2 font-body font-medium text-steel-gray hover:text-midnight-ink text-body-sm transition-colors"
       >
-        <span class="text-lg leading-none mt-[-2px]">&larr;</span> Clientes
+        <span class="text-lg leading-none -mt-0.5">&larr;</span> Clientes
       </a>
     </div>
 
     <div class="w-full flex flex-col gap-2 z-10 pb-6 border-b border-ash-gray">
       <p class="font-body text-body-sm text-iron leading-none">
-        {client.company || "Sin empresa"} {client.industry ? `· ${client.industry}` : ""}
+        {client.company || "Sin empresa"} 
       </p>
       
       <div class="w-full flex flex-row items-end justify-between">
-        <h1 class="font-display font-bold text-[56px] md:text-[80px] tracking-tighter text-midnight-ink leading-none">
+        <h1 class="font-display font-bold text-heading-lg md:text-[80px] tracking-tighter text-midnight-ink leading-none">
           {client.name}
         </h1>
 

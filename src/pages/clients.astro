@@ -1,7 +1,5 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import { clientsMock } from "../mocks/clients";
-import ClientsCard from "../components/clients/ClientsCard.tsx";
 import ClientsList from "../components/clients/ClientsList.tsx";
 import { createClient } from "../lib/supabase.ts";
 import NewClientButton from "../components/clients/NewClientButton.tsx";
@@ -31,7 +29,7 @@ if (!clients) return Astro.redirect("/");
 <MainLayout>
   <div class="w-full flex flex-col gap-10 mt-10">
     <div class="w-full flex flex-row items-center justify-between">
-      <h1 class="font-display font-bold text-[56px] md:text-[80px] tracking-tighter text-midnight-ink leading-none">
+      <h1 class="font-display font-bold text-heading md:text-[80px] tracking-tighter text-midnight-ink leading-none">
         Clientes
       </h1>
       <NewClientButton client:load />

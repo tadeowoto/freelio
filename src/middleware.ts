@@ -17,7 +17,7 @@ export const onRequest = defineMiddleware(async ({ request, cookies, redirect, u
   const supabase = createClient({ request, cookies });
   const { data } = await supabase.auth.getUser();
 
-  if (!data.user) return redirect("/auth/signin");
+  if (!data.user) return redirect("/");
 
 
   return next();

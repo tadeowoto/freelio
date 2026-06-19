@@ -4,11 +4,7 @@ import { createClient } from "../../lib/supabase";
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const body = await request.json();
-
-   
     const supabase = createClient({ request, cookies });
-
-   
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: "No autorizado" }), { status: 401 });

@@ -18,14 +18,17 @@ export interface AssetLink {
 
 export interface BrandKit {
   id: string;
+  client_id: string;
   colors: Color[];
   fonts: Font[];
   notes: string | null;
   assets_links: AssetLink[];
+  created_at: string;
 }
 
 export interface Client {
   id: string;
+  user_id: string;
   name: string;
   company: string | null;
   email: string | null;
@@ -34,10 +37,15 @@ export interface Client {
   payment_method: string | null;
   first_contact_at: string | null;
   last_contact_at: string | null;
-  notes: string | null;
   status: string;
   fee: number | null;
-  
+  created_at: string;
+}
+
+export interface ClientWithBrandKit extends Client {
+  brand_kits?: Array<{
+    colors: Color[]; 
+  }>;
 }
 
 export interface Event {
@@ -51,16 +59,21 @@ export interface Event {
   end_at: Date;
   reminder: Date;
   status: string;
+  created_at: Date;
+  reminder_sent: boolean;
 }
 
 export interface FullCalendarEvent {
   id: string;
+  client_id: string;
   title: string;
   date: string;
   type: string;
   status: string;
   description: string;
   end_at: string;
+  reminder?: string;
+  reminder_sent?: boolean;
 }
 
 export type EventFormValues = {
