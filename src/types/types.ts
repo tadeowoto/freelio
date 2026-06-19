@@ -33,6 +33,7 @@ export interface Client {
   company: string | null;
   email: string | null;
   phone: string | null;
+  contact: string | null;
   payment_status: string | null;
   payment_method: string | null;
   first_contact_at: string | null;

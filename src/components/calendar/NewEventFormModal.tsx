@@ -55,6 +55,7 @@ export default function NewEventFormModal({
   const [eventType, setEventType] = useState("reunion");
 
   const [reminderEnabled, setReminderEnabled] = useState(false);
+  console.log(reminderEnabled);
 
   const startAt = watch("start_at");
 
@@ -111,6 +112,8 @@ export default function NewEventFormModal({
     const startAtChanged =
       IsEdit && eventData?.start_at && data.start_at !== eventData.start_at;
 
+    const reminder_sent = !reminderEnabled;
+
     const formData: any = {
       client_id: data.client_id || null,
       title: data.title,
@@ -120,17 +123,17 @@ export default function NewEventFormModal({
       end_at: data.end_at || null,
       status: data.status || "pendiente",
       reminder: reminderTimestamp,
-
-      ...(IsEdit && {
-        reminder_sent: startAtChanged
-          ? false
-          : (eventData?.reminder_sent ?? false),
-      }),
+      reminder_sent:
+        IsEdit && reminderEnabled && !startAtChanged
+          ? (eventData?.reminder_sent ?? false)
+          : reminder_sent,
     };
 
     if (IsEdit && eventData?.id) {
       formData.id = eventData.id;
     }
+
+    console.log("Submitting form with STATUSSS:", formData.status);
 
     try {
       const endpoint = IsEdit ? "/api/edit/events" : "/api/events";
@@ -163,7 +166,7 @@ export default function NewEventFormModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 sm:p-6"
       onClick={handleBackdropClick}
     >
-      <div className="bg-canvas-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar">
+      <div className="bg-canvas-white w-full max-w-160 max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar">
         <div className="absolute top-0 left-0 w-full h-40 pointer-events-none overflow-hidden select-none rounded-t-2xl z-0">
           <div className="absolute top-0 left-0 w-32 h-24 bg-cadet-blue"></div>
           <div className="absolute top-0 left-32 w-16 h-12 bg-sunny-yellow"></div>
@@ -208,7 +211,7 @@ export default function NewEventFormModal({
           onSubmit={onSubmit}
           className="p-6 md:p-8 pt-16 flex flex-col gap-6 relative z-10 w-full"
         >
-          <h1 className="font-display font-bold text-[48px] md:text-[56px] tracking-tighter text-midnight-ink leading-none mb-2 mix-blend-multiply">
+          <h1 className="font-display font-bold text-[48px] md:text-heading-lg tracking-tighter text-midnight-ink leading-none mb-2 mix-blend-multiply">
             {IsEdit ? "Editar evento" : "Nuevo evento"}
           </h1>
 
@@ -246,7 +249,7 @@ export default function NewEventFormModal({
                     key={type.value}
                     type="button"
                     onClick={() => setEventType(type.value)}
-                    className={`h-10 px-5 rounded-full font-body text-[14px] font-medium border transition-all cursor-pointer outline-none focus:ring-2 focus:ring-cadet-blue/50 ${
+                    className={`h-10 px-5 rounded-full font-body text-body-sm font-medium border transition-all cursor-pointer outline-none focus:ring-2 focus:ring-cadet-blue/50 ${
                       eventType === type.value
                         ? "bg-cadet-blue text-white border-cadet-blue"
                         : "bg-white text-midnight-ink border-ash-gray hover:border-midnight-ink"
@@ -264,7 +267,7 @@ export default function NewEventFormModal({
               </label>
               <select
                 {...register("client_id")}
-                className="border border-ash-gray bg-white rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors cursor-pointer appearance-none"
+                className="border border-ash-gray bg-white rounded-md h-12 px-4 font-body text-body-sm font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors cursor-pointer appearance-none"
                 style={{
                   backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')`,
                   backgroundRepeat: "no-repeat",
@@ -294,7 +297,7 @@ export default function NewEventFormModal({
                 </label>
                 <input
                   type="datetime-local"
-                  className="border border-ash-gray rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors"
+                  className="border border-ash-gray rounded-md h-12 px-4 font-body text-body-sm font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors"
                   {...register("start_at", {
                     required: "La fecha de inicio es obligatoria",
                   })}
@@ -312,7 +315,7 @@ export default function NewEventFormModal({
                 </label>
                 <input
                   type="datetime-local"
-                  className="border border-ash-gray rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors"
+                  className="border border-ash-gray rounded-md h-12 px-4 font-body text-body-sm font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors"
                   {...register("end_at")}
                 />
               </div>
@@ -320,32 +323,23 @@ export default function NewEventFormModal({
 
             <div className="flex items-center gap-4 mt-2">
               <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-ash-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-vivid-green"></div>
-                <span className="ml-3 font-body font-medium text-[14px] text-midnight-ink">
-                  Todo el día
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={reminderEnabled}
+                  onChange={() => setReminderEnabled(!reminderEnabled)}
+                />
+                <div className="w-11 h-6 bg-ash-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-vivid-green"></div>
+                <span className="ml-3 font-body font-medium text-body text-midnight-ink">
+                  Enviar recordatorio
                 </span>
               </label>
             </div>
-
-            <div className="flex flex-col gap-2 mt-2">
-              <label className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-                Recordatorio
-              </label>
-              <select
-                className="border border-ash-gray bg-white rounded-md h-12 px-4 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors cursor-pointer appearance-none"
-                style={{
-                  backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "right 12px center",
-                  backgroundSize: "16px",
-                }}
-              >
-                <option value="none">Sin recordatorio</option>
-                <option value="1_day">1 día antes</option>
-                <option value="1_hour">1 hora antes</option>
-              </select>
-            </div>
+            {reminderEnabled && startAt && (
+              <span className="font-body text-[12px] text-steel-gray mt-1">
+                Recordatorio: {formatReminderDate(startAt)}
+              </span>
+            )}
           </div>
 
           <div className="bg-white border border-ash-gray rounded-xl p-6 md:p-8 flex flex-col gap-6 w-full">
@@ -358,7 +352,7 @@ export default function NewEventFormModal({
               </label>
               <textarea
                 rows={4}
-                className="border border-ash-gray rounded-md px-4 py-3 font-body text-[14px] font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors resize-y"
+                className="border border-ash-gray rounded-md px-4 py-3 font-body text-body-sm font-medium text-midnight-ink outline-none focus:border-cadet-blue transition-colors resize-y"
                 {...register("description")}
               />
             </div>
@@ -368,13 +362,13 @@ export default function NewEventFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="font-body font-bold text-[16px] text-midnight-ink bg-transparent border-none cursor-pointer hover:underline outline-none"
+              className="font-body font-bold text-body-sm text-midnight-ink bg-transparent border-none cursor-pointer hover:underline outline-none"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="h-12 px-8 bg-cadet-blue text-white border-none rounded-full font-body font-bold text-[16px] cursor-pointer hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-cadet-blue/50 focus:ring-offset-2"
+              className="h-12 px-8 bg-cadet-blue text-white border-none rounded-full font-body font-bold text-body-sm cursor-pointer hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-cadet-blue/50 focus:ring-offset-2"
             >
               {IsEdit ? "Guardar cambios" : "Crear evento"}
             </button>
