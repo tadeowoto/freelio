@@ -12,8 +12,13 @@ interface Props {
   events: Event[];
 }
 
-export default function ClientTabs({ client, brandKit, events }: Props) {
+export default function ClientTabs({ client, brandKit: initialBrandKit, events }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("info");
+  const [currentBrandKit, setCurrentBrandKit] = useState(initialBrandKit);
+
+  const handleBrandKitSaved = (updated: any) => {
+    setCurrentBrandKit(updated);
+  };
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "info", label: "Info" },
@@ -50,13 +55,13 @@ export default function ClientTabs({ client, brandKit, events }: Props) {
         <motion.div
           key={activeTab}
           variants={slideUp}
-          initial="hidden"
+          initial={false}
           animate="visible"
           exit={{ opacity: 0, y: -8, transition: { duration: 0.15 } }}
         >
           {activeTab === "info" && <TabInfo client={client} />}
           {activeTab === "brandkit" && (
-            <TabBrandKit brandKit={brandKit} clientId={client.id} />
+            <TabBrandKit brandKit={currentBrandKit} clientId={client.id} onBrandKitSaved={handleBrandKitSaved} />
           )}
           {activeTab === "eventos" && <TabEventos events={events ?? []} />}
         </motion.div>

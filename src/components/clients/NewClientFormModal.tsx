@@ -16,11 +16,13 @@ type ClientFormData = {
 type NewClientFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
+  onSuccess?: (data: any) => void;
 };
 
 export default function NewClientFormModal({
   isOpenModal,
   onClose,
+  onSuccess,
 }: NewClientFormModalProps) {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -58,11 +60,11 @@ export default function NewClientFormModal({
 
       if (!response.ok) throw new Error("Error al guardar");
 
-      const data = await response.json();
+      const newClient = await response.json();
       toast.success("Cliente guardado");
 
+      onSuccess?.(newClient);
       onClose();
-      window.location.reload();
     } catch (err) {
       toast.error("Error al guardar el cliente");
       console.error(err);

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { staggerContainer, staggerItem } from "../../lib/animations";
-import ClientsCard, { type ClientCardInterface } from "./ClientsCard";
+import ClientsCard from "./ClientsCard";
+import type { ClientWithBrandKit } from "../../types/types";
 
 type Filter = "all" | "active" | "inactive";
 
@@ -14,7 +15,7 @@ const filterButtons: { label: string; value: Filter }[] = [
 export default function ClientsList({
   clients,
 }: {
-  clients: ClientCardInterface[];
+  clients: ClientWithBrandKit[];
 }) {
   const [filter, setFilter] = useState<Filter>("all");
 
@@ -49,10 +50,10 @@ export default function ClientsList({
         ))}
       </div>
 
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
+        <motion.div
+          variants={staggerContainer}
+          initial={false}
+          animate="visible"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         {filtered.map((client) => (

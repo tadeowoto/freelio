@@ -29,6 +29,7 @@ const navItems = [
           return (
             <a
               href={href}
+              data-astro-prefetch="hover"
               class:list={[
                 "flex items-center gap-3 px-4 py-3 rounded-full font-body font-medium text-body-sm transition-all",
                 isActive
@@ -46,14 +47,18 @@ const navItems = [
   </div>
 
   <div class="w-full flex items-center gap-3 px-3 py-4">
-    <img
-      src={profile?.avatar_url}
-      alt="Profile Picture"
-      class="w-10 h-10 rounded-full shrink-0 object-cover"
-    />
+    <div class="relative w-10 h-10 shrink-0">
+      <div id="avatar-skeleton" class="skeleton absolute inset-0 w-full h-full rounded-full" />
+      <img
+        src={profile?.avatar_url}
+        alt="Profile Picture"
+        class="relative w-10 h-10 rounded-full object-cover"
+        onLoad="document.getElementById('avatar-skeleton').style.display='none'"
+      />
+    </div>
     <div class="min-w-0 flex flex-col gap-0.5">
       <p class="text-white font-body font-semibold text-body-sm truncate">{profile?.full_name}</p>
-      <a href="/api/auth/signout" class="inline-block">
+      <a href="/api/auth/signout" data-astro-reload class="inline-block">
         <button class="bg-transparent border-none p-0 cursor-pointer outline-none">
           <p class="text-steel-gray font-body text-caption hover:text-white transition-colors">Cerrar sesión</p>
         </button>

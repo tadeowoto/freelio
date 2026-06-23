@@ -1,8 +1,7 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import ClientsList from "../components/clients/ClientsList.tsx";
+import ClientsPage from "../components/clients/ClientsPage";
 import { createClient } from "../lib/supabase.ts";
-import NewClientButton from "../components/clients/NewClientButton.tsx";
 
 const supabase = createClient({
   request: Astro.request,
@@ -27,14 +26,5 @@ if (!clients) return Astro.redirect("/");
 ---
 
 <MainLayout>
-  <div class="w-full flex flex-col gap-10 mt-10">
-    <div class="w-full flex flex-row items-center justify-between">
-      <h1 class="font-display font-bold text-heading md:text-[80px] tracking-tighter text-midnight-ink leading-none title-fade-in">
-        Clientes
-      </h1>
-      <NewClientButton client:load />
-    </div>
-
-    <ClientsList client:load clients={clients} />
-  </div>
+  <ClientsPage client:load clients={clients} />
 </MainLayout>

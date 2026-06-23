@@ -8,6 +8,7 @@ import NewBrandKitButton from "./BrandKitButton";
 type TabBrandKitProps = {
   brandKit: BrandKit | null;
   clientId: string;
+  onBrandKitSaved?: (data: any) => void;
 };
 
 function SectionReveal({ children }: { children: React.ReactNode }) {
@@ -25,12 +26,12 @@ function SectionReveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
+export default function TabBrandKit({ brandKit, clientId, onBrandKitSaved }: TabBrandKitProps) {
   if (!brandKit) {
     return (
       <motion.div
         variants={slideUp}
-        initial="hidden"
+        initial={false}
         animate="visible"
         className="flex flex-col items-center justify-center py-20 gap-6"
       >
@@ -41,6 +42,7 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
           clientId={clientId}
           isEdit={false}
           text={"Crear BrandKit"}
+          onSuccess={onBrandKitSaved}
         />
       </motion.div>
     );
@@ -50,7 +52,7 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
     <div className="flex flex-col gap-6 w-full">
       <motion.div
         variants={slideUp}
-        initial="hidden"
+        initial={false}
         animate="visible"
         className="flex justify-end w-full"
       >
@@ -59,6 +61,7 @@ export default function TabBrandKit({ brandKit, clientId }: TabBrandKitProps) {
           brandKit={brandKit}
           isEdit={true}
           text={"Editar brand kit"}
+          onSuccess={onBrandKitSaved}
         />
       </motion.div>
 

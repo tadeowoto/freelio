@@ -15,6 +15,7 @@ type NewBrandkitFormModalProps = {
   clientId: string;
   brandKit?: BrandKit | null;
   isEdit: boolean;
+  onSuccess?: (data: any) => void;
 };
 
 type FormInputs = {
@@ -30,6 +31,7 @@ export default function NewBrandKitFormModal({
   clientId,
   brandKit,
   isEdit,
+  onSuccess,
 }: NewBrandkitFormModalProps) {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -154,9 +156,10 @@ export default function NewBrandKitFormModal({
 
         if (!response.ok) throw new Error("Error al editar el brand kit");
 
+        const updatedBrandKit = await response.json();
         toast.success("Brand kit editado exitosamente");
+        onSuccess?.(updatedBrandKit);
         onClose();
-        window.location.reload();
       } catch (err) {
         toast.error("Error al editar el brand kit");
         console.error(err);
@@ -171,9 +174,10 @@ export default function NewBrandKitFormModal({
 
         if (!response.ok) throw new Error("Error al guardar el brand kit");
 
+        const newBrandKit = await response.json();
         toast.success("Brand kit guardado exitosamente");
+        onSuccess?.(newBrandKit);
         onClose();
-        window.location.reload();
       } catch (err) {
         toast.error("Error al guardar el brand kit");
         console.error(err);

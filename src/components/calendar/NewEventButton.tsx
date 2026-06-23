@@ -1,36 +1,14 @@
-import { useState } from "react";
-import { AnimatePresence } from "motion/react";
-import NewEventFormModal from "./NewEventFormModal.tsx";
-import type { Client } from "../../types/types";
-
 interface NewEventButtonProps {
-  clients?: Client[];
+  onClick?: () => void;
 }
 
-export default function NewEventButton({ clients }: NewEventButtonProps) {
-  const [isOpenModal, setIsOpenModal] = useState(false);
-
-  const handleClick = () => {
-    setIsOpenModal(!isOpenModal);
-  };
-
+export default function NewEventButton({ onClick }: NewEventButtonProps) {
   return (
-    <>
-      <button
-        onClick={handleClick}
-        className="h-10 px-6 flex text-white items-center gap-2 bg-sunset-orange border-none rounded-sm font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
-      >
-        <span className="text-xl font-bold">+</span> Nuevo evento
-      </button>
-      <AnimatePresence>
-        {isOpenModal && (
-          <NewEventFormModal
-            onClose={() => setIsOpenModal(false)}
-            isOpenModal={isOpenModal}
-            clients={clients}
-          />
-        )}
-      </AnimatePresence>
-    </>
+    <button
+      onClick={onClick}
+      className="h-10 px-6 flex text-white items-center gap-2 bg-sunset-orange border-none rounded-sm font-sans font-medium text-(--text-body) cursor-pointer hover:opacity-90 transition-opacity"
+    >
+      <span className="text-xl font-bold">+</span> Nuevo evento
+    </button>
   );
 }

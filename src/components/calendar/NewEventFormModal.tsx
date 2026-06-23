@@ -12,6 +12,7 @@ type NewEventFormModalProps = {
   IsEdit?: boolean;
   eventData?: any;
   clients?: Client[];
+  onSuccess?: (data: any) => void;
 };
 
 const EVENT_TYPES = [
@@ -29,6 +30,7 @@ export default function NewEventFormModal({
   IsEdit,
   eventData,
   clients = [],
+  onSuccess,
 }: NewEventFormModalProps) {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -148,10 +150,11 @@ export default function NewEventFormModal({
         throw new Error(errorData.error || "Error al guardar");
       }
 
+      const savedEvent = await response.json();
       toast.success("Evento guardado correctamente");
 
+      onSuccess?.(savedEvent);
       onClose();
-      window.location.reload();
     } catch (err) {
       toast.error("Error al guardar el evento");
       console.error(err);

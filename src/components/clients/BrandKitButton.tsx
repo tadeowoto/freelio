@@ -8,6 +8,7 @@ type NewBrandKitButtonProps = {
   brandKit?: BrandKit;
   isEdit: boolean;
   text: string;
+  onSuccess?: (data: any) => void;
 };
 
 export default function NewBrandKitButton({
@@ -15,6 +16,7 @@ export default function NewBrandKitButton({
   brandKit,
   isEdit,
   text,
+  onSuccess,
 }: NewBrandKitButtonProps) {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -38,6 +40,7 @@ export default function NewBrandKitButton({
             clientId={clientId}
             brandKit={brandKit}
             isEdit={isEdit}
+            onSuccess={onSuccess}
           />
         )}
       </AnimatePresence>

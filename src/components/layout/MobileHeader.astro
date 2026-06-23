@@ -20,13 +20,13 @@ if (!profile) {
 
 <div class="md:hidden flex flex-col justify-between  fixed top-16 left-0 bottom-0 w-64 bg-midnight-ink border-r  z-20 transform -translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out">
   <nav class="flex flex-col p-4 gap-2">
-    <a href="/dashboard" class="text-white font-body text-(--text-body) py-2 px-3 rounded-sm hover:bg-white/10 transition-colors">
+    <a href="/dashboard" data-astro-prefetch="hover" class="text-white font-body text-(--text-body) py-2 px-3 rounded-sm hover:bg-white/10 transition-colors">
       Dashboard
     </a>
-    <a href="/calendar" class="text-white font-body text-(--text-body) py-2 px-3 rounded-sm hover:bg-white/10 transition-colors">
+    <a href="/calendar" data-astro-prefetch="hover" class="text-white font-body text-(--text-body) py-2 px-3 rounded-sm hover:bg-white/10 transition-colors">
       Calendario
     </a>
-    <a href="/clients" class="text-white font-body text-(--text-body) py-2 px-3 rounded-sm hover:bg-white/10 transition-colors">
+    <a href="/clients" data-astro-prefetch="hover" class="text-white font-body text-(--text-body) py-2 px-3 rounded-sm hover:bg-white/10 transition-colors">
       Clientes
     </a>
   </nav>
@@ -39,7 +39,7 @@ if (!profile) {
     />
     <div class="min-w-0">
       <p class="text-white font-bold text-sm">{profile?.full_name}</p>
-      <a href="/api/auth/signout">
+      <a href="/api/auth/signout" data-astro-reload>
         <button>
           <p class="text-steel-gray text-xs">Cerrar sesión</p>
         </button>

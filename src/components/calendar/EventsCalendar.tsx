@@ -14,16 +14,45 @@ interface EventsCalendarProps {
 }
 
 export default function EventsCalendar({
-  events,
+  events: initialEvents,
   clients,
 }: EventsCalendarProps) {
   const calendarRef = useRef<FullCalendar>(null);
+  const [calendarEvents, setCalendarEvents] = useState(initialEvents);
   const [currentTitle, setCurrentTitle] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
 
   const [isEdit, setIsEdit] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  const handleOpenNewEvent = () => {
+    setIsEdit(false);
+    setSelectedEvent(null);
+    const today = new Date().toISOString().split("T")[0];
+    setSelectedDate(`${today}T09:00`);
+    setIsModalOpen(true);
+  };
+
+  const handleEventSuccess = (savedEvent: any, wasEdit: boolean | undefined) => {
+    const formatted = {
+      id: savedEvent.id,
+      client_id: savedEvent.client_id || "",
+      title: savedEvent.title,
+      date: savedEvent.start_at?.substring(0, 10) || "",
+      type: savedEvent.type,
+      status: savedEvent.status,
+      description: savedEvent.description || "",
+      end_at: savedEvent.end_at?.substring(0, 10) || "",
+    };
+    if (wasEdit) {
+      setCalendarEvents((prev) =>
+        prev.map((e) => (e.id === formatted.id ? formatted : e)),
+      );
+    } else {
+      setCalendarEvents((prev) => [...prev, formatted]);
+    }
+  };
 
   const handleDateClick = (info: { dateStr: string }) => {
     setIsEdit(false);
@@ -89,7 +118,7 @@ export default function EventsCalendar({
       <div className="w-full flex flex-col gap-6 md:flex-row md:items-end md:justify-between flex-shrink-0 pt-6">
         <motion.h1
           variants={slideDown}
-          initial="hidden"
+          initial={false}
           animate="visible"
           className="font-display font-extrabold text-[56px] md:text-[80px] text-midnight-ink leading-[0.9] tracking-tighter"
         >
@@ -118,7 +147,7 @@ export default function EventsCalendar({
             </button>
           </div>
 
-          <NewEventButton clients={clients} />
+          <NewEventButton onClick={handleOpenNewEvent} />
         </div>
       </div>
 
@@ -146,7 +175,7 @@ export default function EventsCalendar({
       </div>
 
       <div className="w-full flex-1 min-h-0 overflow-x-auto bg-white border border-ash-gray rounded-md overflow-hidden">
-        <div className="w-full h-full min-w-[768px] md:min-w-0 freelio-calendar-custom-grid">
+        <div className="w-full h-full min-w-[768px] md:min-w-0 freelio-calendar-custom-grid min-h-[500px]">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, interactionPlugin]}
@@ -154,7 +183,7 @@ export default function EventsCalendar({
             headerToolbar={false}
             height="100%"
             locale="es"
-            events={events}
+            events={calendarEvents}
             dateClick={handleDateClick}
             eventClick={handleEventClick}
             selectable={true}
@@ -197,6 +226,7 @@ export default function EventsCalendar({
             IsEdit={isEdit}
             eventData={selectedEvent}
             clients={clients}
+            onSuccess={handleEventSuccess}
           />
         )}
       </AnimatePresence>
