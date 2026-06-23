@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { motion } from "motion/react";
+import { modalBackdrop, modalContent } from "../../lib/animations";
 import { toast } from "sonner";
 
 type ClientFormData = {
@@ -20,8 +22,6 @@ export default function NewClientFormModal({
   isOpenModal,
   onClose,
 }: NewClientFormModalProps) {
-  if (!isOpenModal) return null;
-
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -70,11 +70,21 @@ export default function NewClientFormModal({
   });
 
   return (
-    <div
+    <motion.div
+      variants={modalBackdrop}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px] p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white w-full max-w-160 max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col">
+      <motion.div
+        variants={modalContent}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="bg-white w-full max-w-160 max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col"
+      >
         <div className="absolute top-0 left-0 w-full h-24 pointer-events-none overflow-hidden select-none z-0">
           <div className="absolute top-0 left-0 w-24 h-24 bg-vivid-green"></div>
           <div className="absolute top-0 left-24 w-16 h-8 bg-bubblegum-pink"></div>
@@ -279,7 +289,7 @@ export default function NewClientFormModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

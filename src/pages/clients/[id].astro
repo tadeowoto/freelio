@@ -57,9 +57,9 @@ const { data: events } = await supabase
     <div class="z-10 mt-2">
       <a
         href="/clients"
-        class="inline-flex items-center gap-2 font-body font-medium text-steel-gray hover:text-midnight-ink text-body-sm transition-colors"
+        class="inline-flex items-center gap-2 font-body font-medium text-steel-gray hover:text-midnight-ink text-body-sm transition-colors group"
       >
-        <span class="text-lg leading-none -mt-0.5">&larr;</span> Clientes
+        <span class="text-lg leading-none -mt-0.5 group-hover:-translate-x-0.5 transition-transform">&larr;</span> Clientes
       </a>
     </div>
 
@@ -69,7 +69,7 @@ const { data: events } = await supabase
       </p>
       
       <div class="w-full flex flex-row items-end justify-between">
-        <h1 class="font-display font-bold text-heading-lg md:text-[80px] tracking-tighter text-midnight-ink leading-none">
+        <h1 class="font-display font-bold text-heading-lg md:text-[80px] tracking-tighter text-midnight-ink leading-none title-fade-in">
           {client.name}
         </h1>
 

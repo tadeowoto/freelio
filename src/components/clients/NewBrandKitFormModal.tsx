@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
+import { motion } from "motion/react";
+import { modalBackdrop, modalContent } from "../../lib/animations";
 import type { Color, Font, AssetLink, BrandKit } from "../../types/types";
 import BrandKitModalHeader from "./BrandKitModalHeader";
 import ColorSection from "./ColorSection";
@@ -29,8 +31,6 @@ export default function NewBrandKitFormModal({
   brandKit,
   isEdit,
 }: NewBrandkitFormModalProps) {
-  if (!isOpenModal) return null;
-
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -182,11 +182,21 @@ export default function NewBrandKitFormModal({
   });
 
   return (
-    <div
+    <motion.div
+      variants={modalBackdrop}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-canvas-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar">
+      <motion.div
+        variants={modalContent}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="bg-canvas-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar"
+      >
         <div className="absolute top-0 left-0 w-full h-40 pointer-events-none overflow-hidden select-none rounded-t-2xl z-0">
           <div className="absolute top-0 left-0 w-24 h-24 bg-vivid-green"></div>
           <div className="absolute top-0 left-24 w-16 h-8 bg-bubblegum-pink"></div>
@@ -271,7 +281,7 @@ export default function NewBrandKitFormModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

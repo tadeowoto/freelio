@@ -12,7 +12,7 @@ export default function ClientsCard({
 
   return (
     <a href={`/clients/${client.id}`} className="block group w-full h-full">
-      <div className="bg-white border border-ash-gray rounded-2xl p-6 flex flex-col justify-between h-full hover:bg-canvas-white/50 transition-colors cursor-pointer">
+      <div className="bg-white border border-ash-gray rounded-2xl p-6 flex flex-col justify-between h-full hover-lift hover:bg-canvas-white/50 transition-colors cursor-pointer">
         <div className="flex flex-row justify-between items-start">
           <div className="flex flex-col">
             <h2 className="font-display font-bold text-subheading text-midnight-ink leading-none mb-1.5 group-hover:text-composer-blue transition-colors">

@@ -194,3 +194,66 @@
 .freelio-calendar-custom-grid .fc-daygrid-day:hover {
   background-color: var(--color-canvas-white);
 }
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.title-fade-in {
+  animation: fadeSlideUp 0.6s ease-out both;
+}
+
+.title-fade-in-delayed {
+  animation: fadeSlideUp 0.6s ease-out 0.15s both;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-ash-gray);
+  border-top-color: var(--color-midnight-ink);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.hover-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.group:hover .hover-arrow {
+  transform: translateX(4px);
+}

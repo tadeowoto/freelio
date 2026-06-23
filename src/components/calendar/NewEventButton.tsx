@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "motion/react";
 import NewEventFormModal from "./NewEventFormModal.tsx";
 import type { Client } from "../../types/types";
 
@@ -21,11 +22,15 @@ export default function NewEventButton({ clients }: NewEventButtonProps) {
       >
         <span className="text-xl font-bold">+</span> Nuevo evento
       </button>
-      <NewEventFormModal
-        onClose={() => setIsOpenModal(false)}
-        isOpenModal={isOpenModal}
-        clients={clients}
-      />
+      <AnimatePresence>
+        {isOpenModal && (
+          <NewEventFormModal
+            onClose={() => setIsOpenModal(false)}
+            isOpenModal={isOpenModal}
+            clients={clients}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

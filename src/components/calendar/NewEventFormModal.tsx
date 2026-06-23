@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { motion } from "motion/react";
+import { modalBackdrop, modalContent } from "../../lib/animations";
 import type { EventFormValues, Client } from "../../types/types";
 import { toast } from "sonner";
 
@@ -28,8 +30,6 @@ export default function NewEventFormModal({
   eventData,
   clients = [],
 }: NewEventFormModalProps) {
-  if (!isOpenModal) return null;
-
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -55,7 +55,6 @@ export default function NewEventFormModal({
   const [eventType, setEventType] = useState("reunion");
 
   const [reminderEnabled, setReminderEnabled] = useState(false);
-  console.log(reminderEnabled);
 
   const startAt = watch("start_at");
 
@@ -133,8 +132,6 @@ export default function NewEventFormModal({
       formData.id = eventData.id;
     }
 
-    console.log("Submitting form with STATUSSS:", formData.status);
-
     try {
       const endpoint = IsEdit ? "/api/edit/events" : "/api/events";
       const method = IsEdit ? "PATCH" : "POST";
@@ -162,11 +159,21 @@ export default function NewEventFormModal({
   });
 
   return (
-    <div
+    <motion.div
+      variants={modalBackdrop}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 sm:p-6"
       onClick={handleBackdropClick}
     >
-      <div className="bg-canvas-white w-full max-w-160 max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar">
+      <motion.div
+        variants={modalContent}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="bg-canvas-white w-full max-w-160 max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar"
+      >
         <div className="absolute top-0 left-0 w-full h-40 pointer-events-none overflow-hidden select-none rounded-t-2xl z-0">
           <div className="absolute top-0 left-0 w-32 h-24 bg-cadet-blue"></div>
           <div className="absolute top-0 left-32 w-16 h-12 bg-sunny-yellow"></div>
@@ -374,7 +381,7 @@ export default function NewEventFormModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

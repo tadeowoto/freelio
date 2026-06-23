@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "motion/react";
 import NewClientFormModal from "./NewClientFormModal";
 
 export default function NewClientButton() {
@@ -16,10 +17,14 @@ export default function NewClientButton() {
       >
         <span className="text-xl font-bold">+</span> Nuevo cliente
       </button>
-      <NewClientFormModal
-        onClose={() => setIsOpenModal(false)}
-        isOpenModal={isOpenModal}
-      />
+      <AnimatePresence>
+        {isOpenModal && (
+          <NewClientFormModal
+            onClose={() => setIsOpenModal(false)}
+            isOpenModal={isOpenModal}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

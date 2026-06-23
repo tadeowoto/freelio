@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "motion/react";
 import NewBrandKitFormModal from "./NewBrandKitFormModal";
 import type { BrandKit } from "../../types/types";
 
@@ -29,13 +30,17 @@ export default function NewBrandKitButton({
       >
         <span className="text-xl font-bold">+</span> {text}
       </button>
-      <NewBrandKitFormModal
-        isOpenModal={isOpenModal}
-        onClose={() => setIsOpenModal(false)}
-        clientId={clientId}
-        brandKit={brandKit}
-        isEdit={isEdit}
-      />
+      <AnimatePresence>
+        {isOpenModal && (
+          <NewBrandKitFormModal
+            isOpenModal={isOpenModal}
+            onClose={() => setIsOpenModal(false)}
+            clientId={clientId}
+            brandKit={brandKit}
+            isEdit={isEdit}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

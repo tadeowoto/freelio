@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 import { createClient } from "../lib/supabase.ts";
 import UpcomingEventsItem from "../components/dashboard/UpcomingEventsItem.astro";
 import RecentsClientsItem from "../components/dashboard/RecentsClientsItem.astro";
-import InformationItem from "../components/dashboard/InformationItem.astro";
+import InformationItem from "../components/dashboard/InformationItem.tsx";
 
 const supabase = createClient({
   request: Astro.request,
@@ -90,11 +90,11 @@ const { data: clientesRecientes } = await supabase
 
 <MainLayout>
   <div class="relative pt-12 pb-16">
-    <p class="font-body text-body-sm font-medium text-steel-gray mb-6 relative z-10">
+    <p class="font-body text-body-sm font-medium text-steel-gray mb-6 relative z-10 title-fade-in">
       {formattedDate}
     </p>
     
-    <h1 class="font-display font-extrabold text-[64px] md:text-[88px] lg:text-[90px] text-midnight-ink leading-[0.9] tracking-tighter relative z-10 mix-blend-multiply">
+    <h1 class="font-display font-extrabold text-[64px] md:text-[88px] lg:text-[90px] text-midnight-ink leading-[0.9] tracking-tighter relative z-10 mix-blend-multiply title-fade-in-delayed">
       {greeting},<br/>{firtstName}.
     </h1>
 
@@ -106,17 +106,17 @@ const { data: clientesRecientes } = await supabase
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-white border border-ash-gray rounded-md p-6 relative overflow-hidden flex items-start justify-between min-h-[140px]">
-      <InformationItem title="Clientes activos" number={clientesActivos} />
+      <InformationItem client:load title="Clientes activos" number={clientesActivos} />
       <div class="absolute -top-4 -right-4 w-20 h-20 bg-vivid-green rounded-full"></div>
     </div>
 
     <div class="bg-white border border-ash-gray rounded-md p-6 relative overflow-hidden flex items-start justify-between min-h-[140px]">
-      <InformationItem title="Eventos de la semana" number={eventosSemana} />
+      <InformationItem client:load title="Eventos de la semana" number={eventosSemana} />
       <div class="absolute -top-4 -right-4 w-20 h-20 bg-cadet-blue rounded-full"></div>
     </div>
 
     <div class="bg-white border border-ash-gray rounded-md p-6 relative overflow-hidden flex items-start justify-between min-h-[140px]">
-      <InformationItem title="Cobros pendientes" number={cobrosPendientes} />
+      <InformationItem client:load title="Cobros pendientes" number={cobrosPendientes} />
       <div class="absolute -top-4 -right-4 w-20 h-20 bg-sunny-yellow rounded-full"></div>
     </div>
   </div>
@@ -127,8 +127,8 @@ const { data: clientesRecientes } = await supabase
         <h2 class="font-display font-bold text-subheading text-midnight-ink tracking-tight">
           Próximos eventos
         </h2>
-        <a href="/calendar" class="font-body font-medium text-body-sm text-composer-blue hover:text-midnight-ink transition-colors">
-          Ver todo ↗
+        <a href="/calendar" class="font-body font-medium text-body-sm text-composer-blue hover:text-midnight-ink transition-colors group">
+          Ver todo <span class="hover-arrow">↗</span>
         </a>
       </div>
 
@@ -160,8 +160,8 @@ const { data: clientesRecientes } = await supabase
         <h2 class="font-display font-bold text-subheading text-midnight-ink tracking-tight">
           Clientes recientes
         </h2>
-        <a href="/clients" class="font-body font-medium text-body-sm text-composer-blue hover:text-midnight-ink transition-colors">
-          Ver todo ↗
+        <a href="/clients" class="font-body font-medium text-body-sm text-composer-blue hover:text-midnight-ink transition-colors group">
+          Ver todo <span class="hover-arrow">↗</span>
         </a>
       </div>
 

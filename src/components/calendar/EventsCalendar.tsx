@@ -1,4 +1,6 @@
 import { useRef, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { slideDown } from "../../lib/animations";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -85,9 +87,14 @@ export default function EventsCalendar({
   return (
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full flex flex-col gap-6 md:flex-row md:items-end md:justify-between flex-shrink-0 pt-6">
-        <h1 className="font-display font-extrabold text-[56px] md:text-[80px] text-midnight-ink leading-[0.9] tracking-tighter">
+        <motion.h1
+          variants={slideDown}
+          initial="hidden"
+          animate="visible"
+          className="font-display font-extrabold text-[56px] md:text-[80px] text-midnight-ink leading-[0.9] tracking-tighter"
+        >
           {currentTitle}
-        </h1>
+        </motion.h1>
 
         <div className="flex flex-row flex-wrap items-center gap-4 sm:gap-6 pb-2">
           <div className="flex flex-row items-center gap-2">
@@ -181,14 +188,18 @@ export default function EventsCalendar({
         </div>
       </div>
 
-      <NewEventFormModal
-        isOpenModal={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        defaultDate={selectedDate}
-        IsEdit={isEdit}
-        eventData={selectedEvent}
-        clients={clients}
-      />
+      <AnimatePresence>
+        {isModalOpen && (
+          <NewEventFormModal
+            isOpenModal={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            defaultDate={selectedDate}
+            IsEdit={isEdit}
+            eventData={selectedEvent}
+            clients={clients}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
