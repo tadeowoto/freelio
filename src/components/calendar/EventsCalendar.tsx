@@ -4,7 +4,8 @@ import { slideDown } from "../../lib/animations";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import type { FullCalendarEvent, Client } from "../../types/types";
+import type { EventClickArg } from "@fullcalendar/core";
+import type { FullCalendarEvent, Client, Event } from "../../types/types";
 import NewEventButton from "./NewEventButton";
 import NewEventFormModal from "./NewEventFormModal";
 
@@ -24,24 +25,38 @@ export default function EventsCalendar({
   const [selectedDate, setSelectedDate] = useState<string>("");
 
   const [isEdit, setIsEdit] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedEvent, setSelectedEvent] = useState<
+    | {
+        id?: string;
+        title?: string;
+        description?: string;
+        client_id?: string;
+        start_at?: string;
+        end_at?: string;
+        type?: string;
+        status?: string;
+        reminder?: string;
+        reminder_sent?: boolean;
+      }
+    | undefined
+  >(undefined);
 
   const handleOpenNewEvent = () => {
     setIsEdit(false);
-    setSelectedEvent(null);
+    setSelectedEvent(undefined);
     const today = new Date().toISOString().split("T")[0];
     setSelectedDate(`${today}T09:00`);
     setIsModalOpen(true);
   };
 
-  const handleEventSuccess = (savedEvent: any, wasEdit: boolean | undefined) => {
+  const handleEventSuccess = (savedEvent: Event, wasEdit?: boolean) => {
     const formatted = {
       id: savedEvent.id,
       client_id: savedEvent.client_id || "",
-      title: savedEvent.title,
+      title: savedEvent.title || "",
       date: savedEvent.start_at?.substring(0, 10) || "",
-      type: savedEvent.type,
-      status: savedEvent.status,
+      type: savedEvent.type || "otro",
+      status: savedEvent.status || "pendiente",
       description: savedEvent.description || "",
       end_at: savedEvent.end_at?.substring(0, 10) || "",
     };
@@ -56,12 +71,12 @@ export default function EventsCalendar({
 
   const handleDateClick = (info: { dateStr: string }) => {
     setIsEdit(false);
-    setSelectedEvent(null);
+    setSelectedEvent(undefined);
     setSelectedDate(`${info.dateStr}T09:00`);
     setIsModalOpen(true);
   };
 
-  const handleEventClick = (clickInfo: any) => {
+  const handleEventClick = (clickInfo: EventClickArg) => {
     setIsEdit(true);
 
     const eventNode = clickInfo.event;
@@ -115,12 +130,12 @@ export default function EventsCalendar({
 
   return (
     <div className="w-full h-full flex flex-col gap-8">
-      <div className="w-full flex flex-col gap-6 md:flex-row md:items-end md:justify-between flex-shrink-0 pt-6">
+      <div className="w-full flex flex-col gap-6 md:flex-row md:items-end md:justify-between shrink-0 pt-6">
         <motion.h1
           variants={slideDown}
           initial={false}
           animate="visible"
-          className="font-display font-extrabold text-[56px] md:text-[80px] text-midnight-ink leading-[0.9] tracking-tighter"
+          className="font-display font-extrabold text-heading-lg md:text-[80px] text-midnight-ink leading-[0.9] tracking-tighter"
         >
           {currentTitle}
         </motion.h1>
@@ -151,7 +166,7 @@ export default function EventsCalendar({
         </div>
       </div>
 
-      <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-3 font-body text-body-sm text-midnight-ink font-medium flex-shrink-0">
+      <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-3 font-body text-body-sm text-midnight-ink font-medium shrink-0">
         <div className="flex items-center gap-2.5">
           <span className="w-3.5 h-3.5 rounded-full bg-cadet-blue" />
           <span>Reunión</span>
@@ -175,7 +190,7 @@ export default function EventsCalendar({
       </div>
 
       <div className="w-full flex-1 min-h-0 overflow-x-auto bg-white border border-ash-gray rounded-md overflow-hidden">
-        <div className="w-full h-full min-w-[768px] md:min-w-0 freelio-calendar-custom-grid min-h-[500px]">
+        <div className="w-full h-full min-w-3xl md:min-w-0 freelio-calendar-custom-grid min-h-125">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, interactionPlugin]}

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { motion } from "motion/react";
 import { modalBackdrop, modalContent } from "../../lib/animations";
 import type { Color, Font, AssetLink, BrandKit } from "../../types/types";
-import BrandKitModalHeader from "./BrandKitModalHeader";
 import ColorSection from "./ColorSection";
 import FontSection from "./FontSection";
 import AssetSection from "./AssetSection";
@@ -16,7 +15,7 @@ type NewBrandkitFormModalProps = {
   clientName: string;
   brandKit?: BrandKit | null;
   isEdit: boolean;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: BrandKit) => void;
 };
 
 type FormInputs = {
@@ -201,7 +200,7 @@ export default function NewBrandKitFormModal({
         initial="hidden"
         animate="visible"
         exit="exit"
-        className="bg-canvas-white w-full max-w-[640px] max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar"
+        className="bg-canvas-white w-full max-w-160 max-h-[90vh] rounded-2xl shadow-dark overflow-y-auto relative flex flex-col hide-scrollbar"
       >
         <div className="absolute top-0 left-0 w-full h-40 pointer-events-none overflow-hidden select-none rounded-t-2xl z-0">
           <div className="absolute top-0 left-0 w-24 h-24 bg-vivid-green"></div>
@@ -261,7 +260,7 @@ export default function NewBrandKitFormModal({
               <textarea
                 rows={4}
                 placeholder="Editorial, fotografía analógica, mucho aire. Evitar gradientes."
-                className="border border-ash-gray rounded-md p-4 font-body text-[14px] text-midnight-ink outline-none focus:border-cadet-blue transition-all resize-none w-full"
+                className="border border-ash-gray rounded-md p-4 font-body text-sm text-midnight-ink outline-none focus:border-cadet-blue transition-all resize-none w-full"
                 {...register("notes")}
               />
             </div>
@@ -275,13 +274,13 @@ export default function NewBrandKitFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="font-body font-bold text-[16px] text-midnight-ink bg-transparent border-none cursor-pointer hover:underline outline-none"
+              className="font-body font-bold text-body text-midnight-ink bg-transparent border-none cursor-pointer hover:underline outline-none"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="h-12 px-8 bg-cadet-blue text-white border-none rounded-full font-body font-bold text-[16px] cursor-pointer hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-cadet-blue/50 focus:ring-offset-2"
+              className="h-12 px-8 bg-cadet-blue text-white border-none rounded-full font-body font-bold text-body cursor-pointer hover:opacity-90 transition-opacity outline-none focus:ring-2 focus:ring-cadet-blue/50 focus:ring-offset-2"
             >
               Guardar brand kit
             </button>

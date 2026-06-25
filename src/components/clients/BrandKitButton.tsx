@@ -9,7 +9,7 @@ type NewBrandKitButtonProps = {
   brandKit?: BrandKit;
   isEdit: boolean;
   text: string;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: BrandKit) => void;
 };
 
 export default function NewBrandKitButton({

@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import type { ClientWithBrandKit } from "../types/types";
 import ClientsPage from "../components/clients/ClientsPage";
 import { createClient } from "../lib/supabase.ts";
 
@@ -16,13 +17,18 @@ if (!user) {
   return Astro.redirect("/");
 }
 
-const { data: clients } = await supabase
+const { data: rawClients } = await supabase
   .from("clients")
   .select("*, brand_kits(colors)")
   .eq("user_id", user.id)
   .order("name", { ascending: true });
 
-if (!clients) return Astro.redirect("/");
+if (!rawClients) return Astro.redirect("/");
+
+const clients: ClientWithBrandKit[] = rawClients.map((c) => ({
+  ...c,
+  brand_kits: c.brand_kits as unknown as ClientWithBrandKit["brand_kits"],
+}));
 ---
 
 <MainLayout>

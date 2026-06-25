@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { UseFormRegister } from "react-hook-form";
 import type { Color } from "../../types/types";
 

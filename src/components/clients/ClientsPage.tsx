@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import ClientsList from "./ClientsList";
 import NewClientFormModal from "./NewClientFormModal";
-import type { ClientWithBrandKit } from "../../types/types";
+import type { Client, ClientWithBrandKit } from "../../types/types";
 
 export default function ClientsPage({
   clients: initialClients,
@@ -12,7 +12,7 @@ export default function ClientsPage({
   const [clients, setClients] = useState(initialClients);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleClientCreated = (newClient: any) => {
+  const handleClientCreated = (newClient: Client) => {
     setClients((prev) => [{ ...newClient, brand_kits: [] }, ...prev]);
   };
 

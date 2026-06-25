@@ -1,3 +1,5 @@
+import type { Database } from "./database";
+
 export type Tab = "info" | "brandkit" | "eventos";
 
 export interface Color {
@@ -16,52 +18,23 @@ export interface AssetLink {
   url: string;
 }
 
-export interface BrandKit {
-  id: string;
-  client_id: string;
+export type Client = Database["public"]["Tables"]["clients"]["Row"];
+
+export type Event = Database["public"]["Tables"]["events"]["Row"];
+
+export type BrandKit = Omit<
+  Database["public"]["Tables"]["brand_kits"]["Row"],
+  "colors" | "fonts" | "assets_links"
+> & {
   colors: Color[];
   fonts: Font[];
-  notes: string | null;
   assets_links: AssetLink[];
-  created_at: string;
-}
-
-export interface Client {
-  id: string;
-  user_id: string;
-  name: string;
-  company: string | null;
-  email: string | null;
-  phone: string | null;
-  contact: string | null;
-  payment_status: string | null;
-  payment_method: string | null;
-  first_contact_at: string | null;
-  last_contact_at: string | null;
-  status: string;
-  fee: number | null;
-  created_at: string;
-}
+};
 
 export interface ClientWithBrandKit extends Client {
   brand_kits?: Array<{
-    colors: Color[]; 
+    colors: Color[];
   }>;
-}
-
-export interface Event {
-  id: string;
-  user_id: string;
-  client_id: string;
-  title: string;
-  description: string;
-  type: string;
-  start_at: Date;
-  end_at: Date;
-  reminder: Date;
-  status: string;
-  created_at: Date;
-  reminder_sent: boolean;
 }
 
 export interface FullCalendarEvent {
@@ -86,13 +59,3 @@ export type EventFormValues = {
   reminder?: string;
   status?: string;
 };
-
-export type EventClient = {
-  title: string;
-  description?: string;
-  start_at: string;
-  end_at?: string;
-  reminder?: string;
-  status?: string;
-  clients: Client[];
-}

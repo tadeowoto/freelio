@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "motion/react";
 import { modalBackdrop, modalContent } from "../../lib/animations";
+import type { Client } from "../../types/types";
 import { toast } from "sonner";
 
 type ClientFormData = {
@@ -16,11 +17,10 @@ type ClientFormData = {
 type NewClientFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: Client) => void;
 };
 
 export default function NewClientFormModal({
-  isOpenModal,
   onClose,
   onSuccess,
 }: NewClientFormModalProps) {

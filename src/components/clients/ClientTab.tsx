@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { slideUp, fadeIn } from "../../lib/animations";
+import { slideUp } from "../../lib/animations";
 import TabInfo from "./TabInfo";
 import TabBrandKit from "./TabBrandKit";
 import TabEventos from "./TabEventos";
@@ -16,7 +16,7 @@ export default function ClientTabs({ client, brandKit: initialBrandKit, events }
   const [activeTab, setActiveTab] = useState<Tab>("info");
   const [currentBrandKit, setCurrentBrandKit] = useState(initialBrandKit);
 
-  const handleBrandKitSaved = (updated: any) => {
+  const handleBrandKitSaved = (updated: BrandKit) => {
     setCurrentBrandKit(updated);
   };
 

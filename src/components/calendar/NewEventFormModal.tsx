@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "motion/react";
 import { modalBackdrop, modalContent } from "../../lib/animations";
-import type { EventFormValues, Client } from "../../types/types";
+import type { EventFormValues, Client, Event } from "../../types/types";
+import type { Database } from "../../types/database";
 import { toast } from "sonner";
 
 type NewEventFormModalProps = {
@@ -10,9 +11,20 @@ type NewEventFormModalProps = {
   onClose: () => void;
   defaultDate?: string;
   IsEdit?: boolean;
-  eventData?: any;
+  eventData?: {
+    id?: string;
+    title?: string;
+    description?: string;
+    client_id?: string;
+    start_at?: string;
+    end_at?: string;
+    type?: string;
+    status?: string;
+    reminder?: string;
+    reminder_sent?: boolean;
+  };
   clients?: Client[];
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: Event, wasEdit?: boolean) => void;
 };
 
 const EVENT_TYPES = [
@@ -115,7 +127,7 @@ export default function NewEventFormModal({
 
     const reminder_sent = !reminderEnabled;
 
-    const formData: any = {
+    const formData: Database["public"]["Tables"]["events"]["Insert"] & { id?: string } = {
       client_id: data.client_id || null,
       title: data.title,
       description: data.description,
@@ -153,7 +165,7 @@ export default function NewEventFormModal({
       const savedEvent = await response.json();
       toast.success("Evento guardado correctamente");
 
-      onSuccess?.(savedEvent);
+      onSuccess?.(savedEvent, IsEdit);
       onClose();
     } catch (err) {
       toast.error("Error al guardar el evento");

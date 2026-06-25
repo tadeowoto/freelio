@@ -24,22 +24,9 @@ const eventLabelMap: Record<string, string> = {
 };
 
 export function EventRow({ event, isLast }: EventRowProps) {
-  const borderClass = eventColorMap[event.type] || eventColorMap.otro;
-  const labelText = eventLabelMap[event.type] || eventLabelMap.otro;
-
-  const formatDateShort = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return date
-        .toLocaleDateString("es-AR", {
-          day: "numeric",
-          month: "short",
-        })
-        .replace(".", "");
-    } catch {
-      return "—";
-    }
-  };
+  const eventType = event.type ?? "otro";
+  const borderClass = eventColorMap[eventType] || eventColorMap.otro;
+  const labelText = eventLabelMap[eventType] || eventLabelMap.otro;
 
   return (
     <div

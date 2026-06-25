@@ -27,13 +27,13 @@ if (!events) return Astro.redirect("/");
 const formattedEvents = events.map((event) => {
   return {
     id: event.id,
-    title: event.title,
+    title: event.title || "",
     date: event.start_at ? event.start_at.substring(0, 10) : "",
-    type: event.type,
-    status: event.status,
-    description: event.description,
+    type: event.type || "otro",
+    status: event.status || "pendiente",
+    description: event.description || "",
     end_at: event.end_at ? event.end_at.substring(0, 10) : "",
-    client_id: event.client_id,
+    client_id: event.client_id || "",
   };
 });
 
