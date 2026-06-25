@@ -5,6 +5,7 @@ import type { BrandKit } from "../../types/types";
 
 type NewBrandKitButtonProps = {
   clientId: string;
+  clientName: string;
   brandKit?: BrandKit;
   isEdit: boolean;
   text: string;
@@ -13,6 +14,7 @@ type NewBrandKitButtonProps = {
 
 export default function NewBrandKitButton({
   clientId,
+  clientName,
   brandKit,
   isEdit,
   text,
@@ -38,6 +40,7 @@ export default function NewBrandKitButton({
             isOpenModal={isOpenModal}
             onClose={() => setIsOpenModal(false)}
             clientId={clientId}
+            clientName={clientName}
             brandKit={brandKit}
             isEdit={isEdit}
             onSuccess={onSuccess}

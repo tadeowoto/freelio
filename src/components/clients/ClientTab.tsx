@@ -61,7 +61,7 @@ export default function ClientTabs({ client, brandKit: initialBrandKit, events }
         >
           {activeTab === "info" && <TabInfo client={client} />}
           {activeTab === "brandkit" && (
-            <TabBrandKit brandKit={currentBrandKit} clientId={client.id} onBrandKitSaved={handleBrandKitSaved} />
+            <TabBrandKit brandKit={currentBrandKit} clientId={client.id} clientName={client.name} onBrandKitSaved={handleBrandKitSaved} />
           )}
           {activeTab === "eventos" && <TabEventos events={events ?? []} />}
         </motion.div>

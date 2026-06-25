@@ -24,7 +24,6 @@ export const PATCH: APIRoute = async ({ request, cookies }) => {
       );
     }
 
-    console.log(fields);
     const { data, error } = await supabase
       .from("clients")
       .update(fields)

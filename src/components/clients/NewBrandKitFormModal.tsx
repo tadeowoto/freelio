@@ -13,6 +13,7 @@ type NewBrandkitFormModalProps = {
   isOpenModal: boolean;
   onClose: () => void;
   clientId: string;
+  clientName: string;
   brandKit?: BrandKit | null;
   isEdit: boolean;
   onSuccess?: (data: any) => void;
@@ -29,6 +30,7 @@ export default function NewBrandKitFormModal({
   isOpenModal,
   onClose,
   clientId,
+  clientName,
   brandKit,
   isEdit,
   onSuccess,
@@ -223,7 +225,7 @@ export default function NewBrandKitFormModal({
         >
           <div className="flex flex-col gap-1 mb-2">
             <span className="font-body text-[11px] font-bold text-steel-gray uppercase tracking-wider">
-              María García
+              {clientName}
             </span>
             <h1 className="font-display font-bold text-[48px] tracking-tighter text-midnight-ink leading-none">
               {isEdit ? "Editar brand kit" : "Nuevo brand kit"}

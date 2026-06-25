@@ -8,6 +8,7 @@ import NewBrandKitButton from "./BrandKitButton";
 type TabBrandKitProps = {
   brandKit: BrandKit | null;
   clientId: string;
+  clientName: string;
   onBrandKitSaved?: (data: any) => void;
 };
 
@@ -26,7 +27,7 @@ function SectionReveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function TabBrandKit({ brandKit, clientId, onBrandKitSaved }: TabBrandKitProps) {
+export default function TabBrandKit({ brandKit, clientId, clientName, onBrandKitSaved }: TabBrandKitProps) {
   if (!brandKit) {
     return (
       <motion.div
@@ -40,6 +41,7 @@ export default function TabBrandKit({ brandKit, clientId, onBrandKitSaved }: Tab
         </div>
         <NewBrandKitButton
           clientId={clientId}
+          clientName={clientName}
           isEdit={false}
           text={"Crear BrandKit"}
           onSuccess={onBrandKitSaved}
@@ -58,6 +60,7 @@ export default function TabBrandKit({ brandKit, clientId, onBrandKitSaved }: Tab
       >
         <NewBrandKitButton
           clientId={clientId}
+          clientName={clientName}
           brandKit={brandKit}
           isEdit={true}
           text={"Editar brand kit"}
