@@ -45,7 +45,7 @@ export default function NewClientFormModal({
       contact: data.contact,
       email: data.email,
       phone: data.phone,
-      fee: data.fee,
+      fee: data.fee || null,
       status: estadoCliente,
       payment_status: estadoCobro,
       payment_method: modalidad,
