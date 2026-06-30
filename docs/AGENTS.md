@@ -24,13 +24,15 @@ _"Tu estudio, tus clientes, tu tiempo."_
 
 ## STACK TECNOLÓGICO
 
-- **Frontend:** Astro (con islas React para componentes interactivos si son necesarias)
-- **Backend/DB:** Supabase (PostgreSQL + Auth + Storage + Edge Functions)
+- **Frontend:** Astro (con islas React para componentes interactivos)
+- **Backend/DB:** Supabase (PostgreSQL + Auth + Edge Functions)
 - **Auth:** Google OAuth via Supabase (`@supabase/ssr` para manejo de sesión en SSR)
 - **Estilos:** Tailwind CSS v4 con variables CSS personalizadas (ver STYLES.md)
 - **Calendario:** FullCalendar (React wrapper)
-- **Emails:** Resend (para recordatorios y notificaciones)
-- **Despliegue:** Vercel
+- **Emails:** Resend (para recordatorios por edge function)
+- **Animaciones:** Motion (antes Framer Motion)
+- **Formularios:** react-hook-form
+- **Despliegue:** Vercel (SSR)
 - **Responsive:** Sí, desktop y mobile
 
 ---
@@ -42,45 +44,44 @@ _"Tu estudio, tus clientes, tu tiempo."_
 - Login exclusivamente con Google OAuth
 - Al primer login se crea automáticamente un registro en `profiles` via trigger de Supabase
 - Sesión manejada con cookies usando `@supabase/ssr`
-- Rutas protegidas: todo excepto `/` (landing/login)
+- Middleware protege todas las rutas excepto `/` (landing)
 
 ### 2. Dashboard (pantalla principal post-login)
 
-- Vista general del día/semana
-- Mini calendario con eventos del día
-- Lista de próximos eventos (próximas 48-72hs)
-- Clientes activos (acceso rápido)
-- Indicadores simples: clientes activos, eventos pendientes, cobros pendientes
+- Saludo personalizado con nombre del freelancer
+- Tarjetas con indicadores: clientes activos, eventos de la semana, cobros pendientes
+- Lista de próximos eventos (próximas 72 hs)
+- Lista de clientes recientes
+- Contador animado en los indicadores numéricos
 - **Feature futura (NO implementar, solo documentar):** botón de IA que lea el calendario y genere un resumen en lenguaje natural. Chat contextual con acceso a datos del freelancer.
 
 ### 3. Calendario
 
-- Vistas: mensual, semanal, diaria
-- CRUD completo de eventos (crear, ver, editar, eliminar)
+- Vista mensual con FullCalendar + dayGridPlugin
+- CRUD completo de eventos (crear, ver, editar)
 - Tipos de evento: `reunion` | `deadline` | `entrega` | `pago` | `seguimiento` | `otro`
 - Cada evento puede vincularse opcionalmente a un cliente
-- Eventos recurrentes: soporte para repetición semanal y mensual
-- Recordatorios por email usando Resend + Supabase Edge Functions (cron job cada 15 min)
+- Recordatorios por email: toggle que programa `reminder` como 1 día antes del `start_at`
+- Edge Function `send-reminders` consulta eventos con `reminder_sent = false` y `reminder <= now` y envía email via Resend
 - Estados de evento: `pendiente` | `completado` | `cancelado`
 
 ### 4. Clientes
 
-- CRUD completo de clientes
+- CRUD completo de clientes vía modal
 - Estados: `activo` | `inactivo`
 - Datos por cliente:
-  - Nombre, empresa, industria, rol del contacto
-  - Email, teléfono, sitio web
-  - País, ciudad
-  - Tarifa acordada y modalidad: `por_hora` | `por_proyecto` | `mensual`
+  - Nombre, empresa, rol de contacto
+  - Email, teléfono
+  - Tarifa (`fee`) y modalidad: `por_hora` | `por_proyecto` | `mensual`
   - Estado de cobro: `cobrado` | `pendiente`
-  - Fecha de primer contacto, último contacto
-  - Notas internas del freelancer
+  - Fecha de último contacto
+  - Toggle de estado (activo/inactivo) desde ficha
 - **Brand Kit por cliente:**
-  - Paleta de colores: array `{ name, hex }` con color picker visual (react-colorful)
+  - Paleta de colores: array `{ name, hex }` con color picker nativo (`<input type="color">`)
   - Tipografías: array `{ name, role, url? }` donde role es `heading` | `body` | `accent`
   - Notas de estilo libre (textarea)
   - Links a assets externos: array `{ label, url }` (Figma, Drive, etc.)
-- **Feature futura (NO implementar):** portal del cliente con login propio para ver su ficha y dejar notas para que el freelancer corriga las cosas que le pida el cliente.
+- **Feature futura (NO implementar):** portal del cliente con login propio para ver su ficha y dejar notas.
 
 ---
 
@@ -90,70 +91,63 @@ _"Tu estudio, tus clientes, tu tiempo."_
 -- Profiles (extiende auth.users)
 profiles
   id          uuid PRIMARY KEY REFERENCES auth.users(id)
-  full_name   text
-  avatar_url  text
-  profession  text
-  timezone    text DEFAULT 'America/Argentina/Buenos_Aires'
+  full_name   text NOT NULL
+  avatar_url  text NOT NULL
   created_at  timestamptz DEFAULT now()
 
 -- Clients
 clients
   id                uuid PRIMARY KEY DEFAULT gen_random_uuid()
-  user_id           uuid NOT NULL REFERENCES auth.users(id)
+  user_id           uuid REFERENCES profiles(id)
   name              text NOT NULL
-  company           text
-  industry          text
-  contact_role      text
-  email             text
-  phone             text
-  website           text
-  country           text
-  city              text
-  status            text DEFAULT 'activo' CHECK (status IN ('activo','inactivo'))
-  rate              numeric
-  rate_type         text CHECK (rate_type IN ('por_hora','por_proyecto','mensual'))
-  payment_status    text DEFAULT 'pendiente' CHECK (payment_status IN ('cobrado','pendiente'))
-  first_contact_at  date
-  last_contact_at   date
-  notes             text
+  company           text NOT NULL
+  contact           text
+  email             text NOT NULL
+  phone             text NOT NULL
+  status            text
+  payment_method    text
+  payment_status    text
+  fee               numeric
+  first_contact_at  timestamptz
+  last_contact_at   timestamptz
   created_at        timestamptz DEFAULT now()
 
--- Brand Kits (1:1 con clients)
+-- Brand Kits (1:1 con clients, sin user_id propio — RLS via JOIN)
 brand_kits
-  id           uuid PRIMARY KEY DEFAULT gen_random_uuid()
-  client_id    uuid NOT NULL UNIQUE REFERENCES clients(id) ON DELETE CASCADE
-  colors       jsonb DEFAULT '[]'
-  fonts        jsonb DEFAULT '[]'
-  style_notes  text
-  asset_links  jsonb DEFAULT '[]'
-  updated_at   timestamptz DEFAULT now()
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid()
+  client_id     uuid REFERENCES clients(id)
+  colors        jsonb
+  fonts         jsonb
+  notes         text
+  assets_links  jsonb
+  created_at    timestamptz DEFAULT now()
 
 -- Events
 events
-  id           uuid PRIMARY KEY DEFAULT gen_random_uuid()
-  user_id      uuid NOT NULL REFERENCES auth.users(id)
-  client_id    uuid REFERENCES clients(id) ON DELETE SET NULL
-  title        text NOT NULL
-  description  text
-  type         text DEFAULT 'otro' CHECK (type IN ('reunion','deadline','entrega','pago','seguimiento','otro'))
-  start_at     timestamptz NOT NULL
-  end_at       timestamptz
-  is_all_day   boolean DEFAULT false
-  reminder_at  timestamptz
-  status       text DEFAULT 'pendiente' CHECK (status IN ('pendiente','completado','cancelado'))
-  is_recurring boolean DEFAULT false
-  recurrence   jsonb  -- { frequency: 'weekly'|'monthly', interval: 1, end_date?: date }
-  created_at   timestamptz DEFAULT now()
+  id             uuid PRIMARY KEY DEFAULT gen_random_uuid()
+  user_id        uuid REFERENCES profiles(id)
+  client_id      uuid REFERENCES clients(id)
+  title          text
+  description    text
+  type           text
+  start_at       timestamptz
+  end_at         timestamptz
+  reminder       timestamptz
+  status         text
+  reminder_sent  boolean DEFAULT true
+  created_at     timestamptz DEFAULT now()
 ```
 
 ### Row Level Security (RLS)
 
 ```sql
--- profiles
+-- profiles: solo el propio usuario
 USING (id = auth.uid())
--- clients y events
+
+-- clients y events: solo del usuario autenticado
 USING (user_id = auth.uid())
--- brand_kits (via join)
+
+-- brand_kits: vía JOIN con clients (no tiene user_id propio)
 USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()))
 ```
 
@@ -168,66 +162,97 @@ USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()))
 │   │   ├── index.astro               # Landing / Login
 │   │   ├── dashboard.astro           # Home post-login
 │   │   ├── calendar.astro            # Módulo calendario
-│   │   ├── clients/
-│   │   │   ├── index.astro           # Lista de clientes
-│   │   │   ├── [id].astro            # Ficha del cliente + brand kit
-│   │   │   └── new.astro             # Formulario nuevo cliente
-│   │   └── api/auth/callback.ts      # Callback OAuth de Supabase
+│   │   ├── clients.astro             # Lista de clientes
+│   │   └── clients/
+│   │       └── [id].astro            # Ficha del cliente + brand kit
+│   ├── pages/api/
+│   │   ├── auth/
+│   │   │   ├── signin.ts             # Inicia OAuth Google
+│   │   │   └── signout.ts            # Cierra sesión
+│   │   ├── clients.ts                # POST crear cliente
+│   │   ├── brandkits.ts              # POST crear brand kit
+│   │   ├── events.ts                 # POST crear evento
+│   │   └── edit/
+│   │       ├── clients.ts            # PATCH editar cliente
+│   │       ├── brandkits.ts          # PATCH editar brand kit
+│   │       └── events.ts            # PATCH editar evento
 │   ├── components/
-│   │   ├── ui/                       # Button, Input, Modal, Badge, Card
-│   │   ├── calendar/                 # CalendarView, EventModal, EventCard
-│   │   ├── clients/                  # ClientCard, ClientForm, BrandKitEditor
-│   │   └── dashboard/                # DashboardStats, UpcomingEvents
+│   │   ├── calendar/                 # EventsCalendar, NewEventButton, NewEventFormModal
+│   │   ├── clients/                  # ClientsCard, ClientsList, NewClientFormModal, TabInfo, TabBrandKit, TabEventos, etc.
+│   │   ├── dashboard/                # InformationItem, UpcomingEventsItem, RecentsClientsItem
+│   │   ├── landing/                  # Welcome
+│   │   ├── layout/                   # Aside, MobileHeader
+│   │   └── ToastProvider.tsx         # Sonner toaster wrapper
 │   ├── layouts/
-│   │   ├── Base.astro                # HTML base, meta tags
-│   │   └── App.astro                 # Layout autenticado con sidebar
+│   │   ├── Layout.astro              # HTML base, meta tags, fonts
+│   │   └── MainLayout.astro          # Layout autenticado con sidebar + mobile header
 │   ├── lib/
-│   │   ├── supabase.ts               # Cliente Supabase (browser)
-│   │   ├── supabase.server.ts        # Cliente Supabase (SSR)
-│   │   └── utils.ts                  # Helpers generales
-│   ├── types/index.ts                # Tipos TypeScript de todas las entidades
-│   └── styles/global.css             # Variables CSS, clases base
-├── AGENTS.md
-├── STYLES.md
+│   │   ├── supabase.ts               # Cliente Supabase SSR
+│   │   └── animations.ts             # Variants de Motion (fadeIn, slideUp, modalBackdrop, etc.)
+│   ├── types/
+│   │   └── types.ts                  # Tipos TypeScript (Client, Event, BrandKit, FullCalendarEvent, etc.)
+│   ├── styles/
+│   │   └── global.css                # Tailwind v4 @theme + estilos globales + animaciones
+│   ├── middleware.ts                  # Protección de rutas SSR
+│   └── env.d.ts                      # Tipos de env vars
+├── docs/
+│   ├── AGENTS.md                     # Este archivo
+│   └── STYLES.md                     # Sistema de diseño
+├── supabase/
+│   ├── config.toml                   # Config edge functions
+│   └── functions/
+│       └── send-reminders/           # Edge function que envía recordatorios por email
 ├── astro.config.mjs
-└── tailwind.config.mjs
+├── package.json
+└── tsconfig.json
 ```
 
 ---
 
 ## RUTAS Y NAVEGACIÓN
 
-| Ruta                 | Descripción                     | Protegida |
-| -------------------- | ------------------------------- | --------- |
-| `/`                  | Landing con "Entrar con Google" | No        |
-| `/dashboard`         | Home post-login                 | Sí        |
-| `/calendar`          | Calendario completo             | Sí        |
-| `/clients`           | Lista de clientes               | Sí        |
-| `/clients/new`       | Formulario nuevo cliente        | Sí        |
-| `/clients/[id]`      | Ficha del cliente               | Sí        |
-| `/api/auth/callback` | Callback OAuth                  | No        |
+| Ruta                    | Descripción                          | Protegida |
+| ----------------------- | ------------------------------------ | --------- |
+| `/`                     | Landing con "Entrar con Google"      | No        |
+| `/dashboard`            | Home post-login                      | Sí        |
+| `/calendar`             | Calendario completo                  | Sí        |
+| `/clients`              | Lista de clientes                    | Sí        |
+| `/clients/[id]`         | Ficha del cliente + brand kit        | Sí        |
+| `/api/auth/signin`      | Inicia OAuth Google                  | No        |
+| `/api/auth/signout`     | Cierra sesión                        | No        |
+| `/api/auth/callback`    | Callback OAuth                       | No        |
+| `/api/clients`          | POST: crear cliente                  | No*       |
+| `/api/brandkits`        | POST: crear brand kit                | No*       |
+| `/api/events`           | POST: crear evento                   | No*       |
+| `/api/edit/clients`     | PATCH: editar cliente                | No*       |
+| `/api/edit/brandkits`   | PATCH: editar brand kit              | No*       |
+| `/api/edit/events`      | PATCH: editar evento                 | No*       |
+
+\* Las APIs no están en la lista blanca del middleware, pero verifican auth internamente con `getUser()` y RLS protege la DB.
 
 ---
 
 ## CONSIDERACIONES TÉCNICAS
 
-1. **Sesión SSR:** `createServerClient` de `@supabase/ssr` en middleware de Astro. No verificar auth solo en el browser.
+1. **Sesión SSR:** `createServerClient` de `@supabase/ssr` en middleware de Astro. Las API routes también crean su propio client y verifican auth.
 2. **Islas React:** componentes interactivos con `client:load`. Las páginas `.astro` hacen fetch en servidor y pasan props.
-3. **Eventos recurrentes:** campo `recurrence` es JSON. Expansión de ocurrencias en el frontend, no en DB.
-4. **Recordatorios:** Edge Function con cron cada 15 min, consulta `reminder_at` próximo y envía via Resend.
-5. **Brand Kit colores:** `react-colorful` para el picker. Renderizar swatches visuales con los hex.
-6. **Responsive:** sidebar colapsable en mobile. Calendario: vista diaria en mobile, mensual en desktop.
-7. **TypeScript estricto:** tipos generados con `supabase gen types typescript`. Sin `any`.
+3. **Recordatorios:** Edge Function con cron cada 15 min, consulta `reminder_sent = false`, `reminder IS NOT NULL`, `reminder <= now` y envía email via Resend. Marca `reminder_sent = true` tras enviar.
+4. **Brand Kit colores:** color picker nativo HTML (`<input type="color">`). Los colores se guardan como array JSON en la columna `colors`.
+5. **Brand Kit RLS:** `brand_kits` no tiene columna `user_id`. La seguridad se delega a RLS via subquery: `client_id IN (SELECT id FROM clients WHERE user_id = auth.uid())`.
+6. **Responsive:** sidebar colapsable en mobile vía checkbox CSS peer. Calendario con scroll horizontal en mobile.
+7. **TypeScript:** tipos escritos a mano en `src/types/types.ts`. No se usan tipos generados de Supabase.
 
 ---
 
 ## FEATURES FUTURAS (documentar, NO implementar)
 
 1. **Portal del cliente:** link único, el cliente ve su ficha y deja notas.
-2. **IA — Resumen del calendario:** Claude API lee eventos de la semana y genera resumen en lenguaje natural.
+2. **IA — Resumen del calendario:** API lee eventos de la semana y genera resumen en lenguaje natural.
 3. **IA — Chat contextual:** chat flotante con acceso a clientes, eventos y cobros.
 4. **Generación de paleta desde imagen:** subir logo y extraer colores automáticamente.
 5. **Módulo de proyectos:** proyectos con estados, presupuesto y timeline vinculados a clientes.
+6. **Toggle "Todo el día" en eventos:** la columna `is_all_day` no existe en la DB actual.
+7. **Eventos recurrentes:** las columnas `is_recurring` y `recurrence` no existen en la DB actual.
 
 ---
 
@@ -238,8 +263,8 @@ USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()))
 - Tablas Supabase: `snake_case`
 - Comentarios: en español
 - Commits: conventional commits. ej: feat(homepage): ...
-- Branchs : feature/new-styles-homepage
-- Sin `any` en TypeScript
+- Branchs: feature/new-styles-homepage
+- Sin `any` en TypeScript (ideal — el código actual tiene algunos `any` por refactorizar)
 - Solo functional components con hooks
 
 ---
@@ -249,9 +274,12 @@ USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()))
 Antes de tocar cualquier código:
 
 1. Leer `AGENTS.md` y `STYLES.md` completos
-2. Verificar que el componente a crear no existe ya en `src/components/ui/`
+2. Verificar que el componente a crear no existe ya
 3. Usar siempre las variables CSS del sistema de diseño, nunca valores hardcodeados
 4. Respetar la estructura de carpetas definida
 5. Todo componente nuevo debe ser TypeScript con props tipadas
 6. Para correr el proyecto: `npm install && npm run dev`
 7. Variables de entorno necesarias: `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `RESEND_API_KEY`
+8. Confiar en RLS para seguridad de brand_kits (no tiene user_id, usa JOIN-based RLS)
+- La DB es la fuente de verdad. Verificar columnas reales antes de codificar.
+- Recordar que `reminder_sent` default en Supabase es `true`.

@@ -29,8 +29,8 @@ Freelio adopta esta estética orientada a creativos freelance: más expresiva y 
   --color-sunset-orange: #ff5500;
   --color-action-red: #c60808;
 
-  --font-display: 'Neue Haas Grotesk Display', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --text-body-sm: 14px;
   --leading-body-sm: 1.43;
@@ -92,8 +92,8 @@ Freelio adopta esta estética orientada a creativos freelance: más expresiva y 
   --color-sunset-orange: #ff5500;
   --color-action-red: #c60808;
 
-  --font-display: 'Neue Haas Grotesk Display', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -135,9 +135,9 @@ Freelio adopta esta estética orientada a creativos freelance: más expresiva y 
 
 | Rol | Font | Tamaño | Line height | Letter spacing |
 |-----|------|--------|-------------|----------------|
-| Display | Neue Haas Grotesk Display | 56px | 1.11 | -0.96px |
-| Heading | Neue Haas Grotesk Display | 36px | 1.25 | 0.225px |
-| Subheading | Neue Haas Grotesk Display | 24px | 1.33 | 0.24px |
+| Display | Space Grotesk | 56px | 1.11 | -0.96px |
+| Heading | Space Grotesk | 36px | 1.25 | 0.225px |
+| Subheading | Space Grotesk | 24px | 1.33 | 0.24px |
 | Body | Inter | 16px | 1.43 | 0.4px |
 | Body SM | Inter | 14px | 1.43 | 0.224px |
 
@@ -162,9 +162,11 @@ Freelio adopta esta estética orientada a creativos freelance: más expresiva y 
 
 ---
 
-## CLASES CSS BASE
+## CLASES CSS BASE (REFERENCIA CONCEPTUAL)
 
-Copia este bloque completo en `src/styles/global.css`:
+> **Nota:** Estas clases son referencia de diseño, no están implementadas en `global.css`.
+> El código actual usa clases Tailwind inline. Si se crean componentes reutilizables en el futuro,
+> estas clases son la guía de estilo a seguir.
 
 ```css
 /* Botones */
@@ -318,7 +320,7 @@ Sidebar (desktop): 240px fijo
   text: white
   Logo: font-display, weight 700, blanco
   Nav links: font-body, weight 500, color steel-gray
-  Link activo: color blanco + borde izquierdo 3px vivid-green
+  Link activo: bg blanco, texto midnight-ink
 
 Contenido principal: flex-1
   bg: var(--surface-page)
